@@ -9,6 +9,7 @@
 <p id="content">This is a paragraph.</p>
 <button onclick="getData();">getData</button><br>
 <button onclick="sheetLog('Name', 'test');">sheetLog</button><br>
+<button onclick="cardLog('Name', 'B5:6D:39:38:F6:F4');">cardLog</button><br>
 <script>
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6l7S2KUZZG_v6Ks1nLkFMGOZRrxmIVK6B2g3rSN0bHsBp82ss2MmiUAgrwqYBC08R/exec";
 async function sheetLog(name, reason){
@@ -25,7 +26,22 @@ async function sheetLog(name, reason){
     console.error(error.message);
   }
 }
-  
+
+async function cardLog(name, data){
+  try {
+    const response = await fetch(SCRIPT_URL+"?met=2&name="+name+"&data="+data, {mode: 'no-cors'});
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    const tex = await response.text();
+    if(tex == "ERROR"){
+      console.error("Error occured form google sheets api when calling function sheetLog");
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
 async function getData() {
   try {
     const response = await fetch(SCRIPT_URL+"?met=0");
