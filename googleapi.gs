@@ -25,7 +25,7 @@ function doGet(e) {
         var sheet = ss.getSheetByName('Log');
         const range = sheet.getRange(String(Number(values[0][0])+1),1, 1, 4);
         var date = new Date(); 
-        range.setValues([[Utilities.formatDate(date, "Pacific/Auckland", "MM/dd/yyyy"), Utilities.formatDate(date, "Pacific/Auckland", "h:mm:ss ")+(date.getHours() >= 12 ? 'PM' : 'AM'), e.parameter.name, e.parameter.reason]]);
+        range.setValues([[Utilities.formatDate(date, "Pacific/Auckland", "dd/MM/yyyy"), Utilities.formatDate(date, "Pacific/Auckland", "h:mm:ss ")+(date.getHours() >= 12 ? 'PM' : 'AM'), e.parameter.name, e.parameter.reason]]);
         SpreadsheetApp.flush();Utilities.fo
         return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
       } catch (err) {
