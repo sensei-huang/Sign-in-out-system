@@ -14,7 +14,7 @@ function doGet(e) {
     }
   }else if(e.parameter.met == 1){
     try {
-      const values = Sheets.Spreadsheets.Values.get(spreadsheetId, "Log!E1").values;
+      const values = Sheets.Spreadsheets.Values.get(spreadsheetId, "Log!F1").values;
       if (!values) {
         // No data found
         return ContentService.createTextOutput("ERROR").setMimeType(ContentService.MimeType.TEXT);
@@ -22,9 +22,9 @@ function doGet(e) {
       try {
         var ss = SpreadsheetApp.openById(spreadsheetId);
         var sheet = ss.getSheetByName('Log');
-        const range = sheet.getRange(String(Number(values[0][0])+1), 1, 1, 4);
+        const range = sheet.getRange(String(Number(values[0][0])+1), 1, 1, 5);
         var date = new Date(); 
-        range.setValues([[Utilities.formatDate(date, "Pacific/Auckland", "d/M/y"), Utilities.formatDate(date, "Pacific/Auckland", "h:mm:ss ")+(date.getHours() >= 12 ? 'PM' : 'AM'), e.parameter.name, e.parameter.reason]]);
+        range.setValues([[e.parameter.inout, Utilities.formatDate(date, "Pacific/Auckland", "d/M/y"), Utilities.formatDate(date, "Pacific/Auckland", "h:mm:ss ")+(date.getHours() >= 12 ? 'PM' : 'AM'), e.parameter.name, e.parameter.reason]]);
         SpreadsheetApp.flush();
         return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
       } catch (err) {
