@@ -1,32 +1,35 @@
 function doGet(e) {
   const spreadsheetId = '15ODUqaZt0XR8L83GgnU2j2FXJ6Nciul-Q-PU3takrYw';
-  if(e.parameter.met == 0){
+  const met = e.parameter.met;
+  if(met == 0){
     try {
-      const rangeName = 'Log!A1:D20';
-      const values = Sheets.Spreadsheets.Values.get(spreadsheetId, rangeName).values;
+      const values = Sheets.Spreadsheets.Values.get(spreadsheetId, 'Log!A1:D20').values;
       if (!values) {
         // No data found
-        return ContentService.createTextOutput("ERROR").setMimeType(ContentService.MimeType.TEXT);
+        return ContentService.createTextOutput("ERROR");
       }
-      return ContentService.createTextOutput(values[0][0]).setMimeType(ContentService.MimeType.TEXT);
+      return ContentService.createTextOutput(values[0][0]);
     } catch (err) {
       console.log(err.message);
     }
-  }else if(e.parameter.met == 1){
+  }else if(met == 1){
     try {
       const values = Sheets.Spreadsheets.Values.get(spreadsheetId, "Log!F1").values;
       if (!values) {
         // No data found
-        return ContentService.createTextOutput("ERROR").setMimeType(ContentService.MimeType.TEXT);
+        return ContentService.createTextOutput("ERROR");
       }
       try {
         var ss = SpreadsheetApp.openById(spreadsheetId);
         var sheet = ss.getSheetByName('Log');
-        const range = sheet.getRange(String(Number(values[0][0])+1), 1, 1, 5);
+        const range = sheet.getRange(Number(values[0][0])+1, 1, 1, 5);
+        const inout = e.parameter.inout;
+        const name = e.parameter.name;
+        const reason = e.parameter.reason;
         var date = new Date(); 
-        range.setValues([[e.parameter.inout, Utilities.formatDate(date, "Pacific/Auckland", "d/M/y"), Utilities.formatDate(date, "Pacific/Auckland", "h:mm:ss ")+(date.getHours() >= 12 ? 'PM' : 'AM'), e.parameter.name, e.parameter.reason]]);
+        range.setValues([[inout, Utilities.formatDate(date, "Pacific/Auckland", "d/M/y"), Utilities.formatDate(date, "Pacific/Auckland", "h:mm:ss ")+(date.getHours() >= 12 ? 'PM' : 'AM'), name, reason]]);
         SpreadsheetApp.flush();
-        return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
+        return ContentService.createTextOutput("Success");
       } catch (err) {
         console.log('Failed with error %s', err.message);
       }
@@ -38,16 +41,16 @@ function doGet(e) {
       const values = Sheets.Spreadsheets.Values.get(spreadsheetId, "StudentID!C1").values;
       if (!values) {
         // No data found
-        return ContentService.createTextOutput("ERROR").setMimeType(ContentService.MimeType.TEXT);
+        return ContentService.createTextOutput("ERROR");
       }
       try {
         var ss = SpreadsheetApp.openById(spreadsheetId);
         var sheet = ss.getSheetByName('StudentID');
-        const range = sheet.getRange(String(Number(values[0][0])+1), 1, 1, 2);
+        const range = sheet.getRange(Number(values[0][0])+1, 1, 1, 2);
         var date = new Date(); 
         range.setValues([[e.parameter.name, e.parameter.data]]);
         SpreadsheetApp.flush();
-        return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
+        return ContentService.createTextOutput("Success");
       } catch (err) {
         console.log('Failed with error %s', err.message);
       }
@@ -55,7 +58,7 @@ function doGet(e) {
       console.log(err.message);
     }
   }
-  return ContentService.createTextOutput("ERROR").setMimeType(ContentService.MimeType.TEXT);
+  return ContentService.createTextOutput("ERROR");
 }
 
 function clear(){
@@ -66,9 +69,9 @@ function clear(){
     const range = sheet.getRange('A2:D10000');
     range.clear();
     SpreadsheetApp.flush();
-    return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
+    return ContentService.createTextOutput("Success");
   } catch (err) {
     console.log('Failed with error %s', err.message);
   }
-  return ContentService.createTextOutput("ERROR").setMimeType(ContentService.MimeType.TEXT);
+  return ContentService.createTextOutput("ERROR");
 }
