@@ -3,6 +3,16 @@
 <head>
 <title>Sign-in</title>
 <style>
+body,html { 
+  font-family: Georgia, serif;
+}
+
+.centred {
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .alert {
   padding: 10px;
   background-color: #00B000;
@@ -49,26 +59,32 @@
     100% { opacity: 0; padding: 0px; font-size: 0%; height: 0%; display: "none"; }
 }
 
-.closebtn {
-  margin-left: 20px;
-  color: white;
-  font-weight: bold;
-  float: right;
-  font-size: 22px;
-  line-height: 20px;
-  cursor: pointer;
-  transition: 0.3s;
+input[type=text], input[type=email] {
+  font-family:inherit;
+  transition: all 150ms linear;
+  padding: 2px;
+  border: double 3px transparent;
+  border-radius: 10px;
+  background-image: linear-gradient(white, white), 
+                    linear-gradient(21deg, rgba(16, 171, 255, 0), rgba(27, 234, 189, 255));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
 }
 
-.closebtn:hover {
-  color: black;
+input[type=text]:focus, input[type=email]:focus {
+  outline: none;
+  border-color: #FFFFFF;
+  box-shadow: 0px 0px 15px 2px #1beabd;
+  /* in order: x offset, y offset, blur size(faded part), spread size(solid part/amount), color */
 }
 </style>
 </head>
 <body>
 
+<div class="centred">
 <h1>Sign-in/sign-out</h1>
 <p id="content">This is a paragraph.</p>
+<input type="text">
 <div id="contain"></div>
 <form onsubmit="event.preventDefault(); submitcode();">
   <select name="sign" id="sign" onchange="signChange()" required>
@@ -103,6 +119,7 @@
 <button onclick="getData();">getData</button><br>
 <button onclick="sheetLog('In', 'Name', 'Test');">sheetLog</button><br>
 <button onclick="cardLog('Name', 'B5:6D:39:38:F6:F4');">cardLog</button><br>
+</div>
 <script>
 /*function removeElemDelay(element, delay) {
   setTimeout(() => {
