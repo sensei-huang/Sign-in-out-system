@@ -407,15 +407,33 @@ input[type=text]:focus, input[type=email]:focus{
     <option value="other">Other</option>
   </select>
   <input placeholder="Reason" id="other" hidden type="text" oninvalid="this.setCustomValidity('Please enter a reason.')" oninput="this.setCustomValidity('')">
+  <br>
+  <input placeholder="Verification code" id="verify" type="text" oninvalid="this.setCustomValidity('Please enter verification code. E.g. AB12')" oninput="handleInput(event); this.setCustomValidity('');" maxlength="4" required hidden>
   
   <br>
   <input type="submit" id="submit" hidden>
 </form><br>
 
 <script>
-let qrcode = new QRCode(document.getElementById("qrcode"));
+function handleInput(e) {
+  var ss = e.target.selectionStart;
+  var se = e.target.selectionEnd;
+  if(/[^A-z0-9]/.test(e.target.value)){
+  	e.target.value = e.target.value.replaceAll(/[^A-z0-9]/g, "");
+  }else{
+  	e.target.value = e.target.value.toUpperCase();
+  }
+  e.target.selectionStart = ss;
+  e.target.selectionEnd = se;
+}
 
-qrcode.makeCode(window.location.href);
+function getVerifyCodeFromURL(){
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  if(urlParams.has('code')){
+  	document.getElementById("verify").value = urlParams.get('code');
+  }
+}
 
 function removeElemDelay(element, delay) {
   setTimeout(() => {
@@ -448,6 +466,7 @@ function signChange(){
   document.getElementById("other").required = false;
   
   document.getElementById("email").hidden = false;
+  document.getElementById("verify").hidden = false;
   document.getElementById("outdef").selected = true;
   document.getElementById("indef").selected = true;
   document.getElementById("submit").hidden = false;
@@ -570,6 +589,10 @@ async function getData() {
     console.error(error.message);
   }
 }
+
+getVerifyCodeFromURL();
+let qrcode = new QRCode(document.getElementById("qrcode"));
+qrcode.makeCode(window.location.href);
 </script>
   
 </body>
