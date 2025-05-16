@@ -491,11 +491,36 @@ async function submitcode(){
   }
 }
 
-function generateCode(){
-  const d = new Date();
+function convertBase(value, from_base, to_base) {
+  var range = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  var from_range = range.slice(0, from_base);
+  var to_range = range.slice(0, to_base);
+  
+  var dec_value = value.split('').reverse().reduce(function (carry, digit, index) {
+    if (from_range.indexOf(digit) === -1) throw new Error('Invalid digit `'+digit+'` for base '+from_base+'.');
+    return carry += from_range.indexOf(digit) * (Math.pow(from_base, index));
+  }, 0);
+  
+  var new_value = '';
+  while (dec_value > 0) {
+    new_value = to_range[dec_value % to_base] + new_value;
+    dec_value = (dec_value - (dec_value % to_base)) / to_base;
+  }
+  return new_value || '0';
+}
+
+function generateCode(next){
+  const d = new Date("14 May 2025");
   let seed = d.getDate()+d.getMonth()*32+d.getFullYear()*400;
   var MT = new MersenneTwister(seed);
-  return MT.nextFloat();
+  for(var i = 0; i < next; i++){
+    MT.nextInteger();
+  }
+  return convertBase(String(MT.nextLong()), 10, 36).slice(-4);
+}
+
+for(var i = 0; i < 1000; i++){
+document.write(generateCode(i)+"<br>");
 }
 
 var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6l7S2KUZZG_v6Ks1nLkFMGOZRrxmIVK6B2g3rSN0bHsBp82ss2MmiUAgrwqYBC08R/exec";
