@@ -385,24 +385,23 @@ Math.mersenneTwisterRandom = function()
     <option value="out">Sign out</option>
   </select><br>
   
-  <input id="email" type="email" name="email" pattern=".+\..+@lphs\.school\.nz" placeholder="School Email" hidden required><br>
+  <input id="email" type="email" name="email" pattern=".+\..+@lphs\.school\.nz" placeholder="School Email" hidden required oninvalid="this.setCustomValidity('Please use your school email. E.g. john.doe@lphs.school.nz')" oninput="this.setCustomValidity('')"><br>
   
-  <select name="inreason" id="inreason" onchange="reasonChange(1)" required hidden>
+  <select name="inreason" id="inreason" onchange="reasonChange(1)" required hidden oninvalid="this.setCustomValidity('Please select a reason.')" oninput="this.setCustomValidity('')">
     <option value="" id="indef" selected disabled hidden>-- Reason --</option>
     <option value="Late">Late</option>
     <option value="Appointment">Appointment</option>
     <option value="other">Other</option>
   </select>
-  <input placeholder="Reason" id="inother" hidden type="text">
   
   
-  <select name="outreason" id="outreason" onchange="reasonChange(2)" required hidden>
+  <select name="outreason" id="outreason" onchange="reasonChange(2)" required hidden oninvalid="this.setCustomValidity('Please select a reason.')" oninput="this.setCustomValidity('')">
     <option value="" id="outdef" selected disabled hidden>-- Reason --</option>
     <option value="Year 13">Year 13</option>
     <option value="Appointment">Appointment</option>
     <option value="other">Other</option>
   </select>
-  <input placeholder="Reason" id="outother" hidden type="text">
+  <input placeholder="Reason" id="other" hidden type="text" oninvalid="this.setCustomValidity('Please enter a reason.')" oninput="this.setCustomValidity('')">
   
   <br>
   <input type="submit" id="submit" hidden>
@@ -432,13 +431,12 @@ function signChange(){
   }
   document.getElementById(inoutstr+"reason").hidden = false;
   document.getElementById(inoutstr+"reason").required = true;
-  document.getElementById(inoutstr+"other").hidden = true;
-  document.getElementById(inoutstr+"other").required = false;
 
   document.getElementById(outinstr+"reason").hidden = true;
   document.getElementById(outinstr+"reason").required = false;
-  document.getElementById(outinstr+"other").hidden = true;
-  document.getElementById(outinstr+"other").required = false;
+  
+  document.getElementById("other").hidden = true;
+  document.getElementById("other").required = false;
   
   document.getElementById("email").hidden = false;
   document.getElementById("outdef").selected = true;
@@ -454,12 +452,12 @@ function reasonChange(inout){
     inoutstr = "out";
   }
   if(document.getElementById(inoutstr+"reason").value == "other"){
-    document.getElementById(inoutstr+"other").hidden = false;
-    document.getElementById(inoutstr+"other").required = true;
-    document.getElementById(inoutstr+"other").value = "";
+    document.getElementById("other").hidden = false;
+    document.getElementById("other").required = true;
+    document.getElementById("other").value = "";
   }else{
-    document.getElementById(inoutstr+"other").hidden = true;
-    document.getElementById(inoutstr+"other").required = false;
+    document.getElementById("other").hidden = true;
+    document.getElementById("other").required = false;
   }
 }
 
@@ -468,7 +466,7 @@ async function submitcode(){
   var email = document.getElementById("email").value;
   var reason = document.getElementById(inout+"reason").value;
   if(reason == "other"){
-  	reason = document.getElementById(inout+"other").value;
+  	reason = document.getElementById("other").value;
   }
   var aler = document.createElement("div");
   aler.className = "sendingalert";
@@ -509,18 +507,11 @@ function convertBase(value, from_base, to_base) {
   return new_value || '0';
 }
 
-function generateCode(next){
-  const d = new Date("14 May 2025");
-  let seed = d.getDate()+d.getMonth()*32+d.getFullYear()*400;
+function generateCode(){
+  var d = new Date();
+  let seed = d.getDate()+d.getMonth()*31+d.getFullYear()*372;
   var MT = new MersenneTwister(seed);
-  for(var i = 0; i < next; i++){
-    MT.nextInteger();
-  }
   return convertBase(String(MT.nextLong()), 10, 36).slice(-4);
-}
-
-for(var i = 0; i < 1000; i++){
-document.write(generateCode(i)+"<br>");
 }
 
 var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6l7S2KUZZG_v6Ks1nLkFMGOZRrxmIVK6B2g3rSN0bHsBp82ss2MmiUAgrwqYBC08R/exec";
