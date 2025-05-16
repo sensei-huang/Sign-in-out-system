@@ -7,6 +7,10 @@ body,html {
   font-family: Georgia, serif;
 }
 
+#qrcode {
+  margin: 20px 0;
+}
+
 .closebtn {
   margin-left: 15px;
   color: white;
@@ -55,13 +59,13 @@ body,html {
 }
 
 @keyframes fade-in {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 @keyframes fade-out {
-    0% { opacity: 1; font-size: 100%; height: 100%; }
-    100% { opacity: 0; padding: 0px; font-size: 0%; height: 0%; display: "none"; }
+  0% { opacity: 1; font-size: 100%; height: 100%; }
+  100% { opacity: 0; padding: 0px; font-size: 0%; height: 0%; display: "none"; }
 }
 
 input[type=text]:hover:not(:focus), input[type=email]:hover:not(:focus), select:hover:not(:focus) {
@@ -117,46 +121,47 @@ input[type=text]:focus, input[type=email]:focus{
   padding: 5px;
 }
 </style>
+<script src=
+"https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-/*
- * -*- coding: utf-8 -*-
- * version: 1.0.1
- * updated: 2021/3/5
- * mail: yunos@graviness.com
- * home: https://www.graviness.com/
- * ref.:
- *  http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/mt.html
- */
-
-
-/**
- * Mersenne Twister class
- * 
- * Mersenne Twister that is one of a method of generating pseudo-random numbers, is implemented.
- * 
- * Generates uniform random numbers of unsigned integer type or floating-point type by the Mersenne Twister.
- * It uses a single integer to initialize the random number generation,
- * but can also use arbitrary bit-width values using an array if needed.
- * 
- * This class is a JavaScript language port of the following site (C language source).
- * http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/CODES/mt19937ar.c
- * The external interface is implemented with reference to java.util.Random class of Java(TM) language.
- * http://sdc.sun.co.jp/java/docs/j2se/1.4/ja/docs/ja/api/java/util/Random.html
- * 
- * The performance is about one-half that of the built-in Math.random,
- * but the quality of the random numbers is as shown in the site concerned.
- * 
- * e.g.
- * // Create an instance and initialize the random number generator with the current time.
- * var mt = new MersenneTwister(new Date().getTime());
- * // Uniform random number of 32-bit unsigned integer type.
- * var randomNumber = mt.nextInteger();
- */
-function class__MersenneTwister__()
-{
+	/*
+	 * -*- coding: utf-8 -*-
+	 * version: 1.0.1
+	 * updated: 2021/3/5
+	 * mail: yunos@graviness.com
+	 * home: https://www.graviness.com/
+	 * ref.:
+	 *  http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/mt.html
+	 */
+	
+	
+	/**
+	 * Mersenne Twister class
+	 * 
+	 * Mersenne Twister that is one of a method of generating pseudo-random numbers, is implemented.
+	 * 
+	 * Generates uniform random numbers of unsigned integer type or floating-point type by the Mersenne Twister.
+	 * It uses a single integer to initialize the random number generation,
+	 * but can also use arbitrary bit-width values using an array if needed.
+	 * 
+	 * This class is a JavaScript language port of the following site (C language source).
+	 * http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/CODES/mt19937ar.c
+	 * The external interface is implemented with reference to java.util.Random class of Java(TM) language.
+	 * http://sdc.sun.co.jp/java/docs/j2se/1.4/ja/docs/ja/api/java/util/Random.html
+	 * 
+	 * The performance is about one-half that of the built-in Math.random,
+	 * but the quality of the random numbers is as shown in the site concerned.
+	 * 
+	 * e.g.
+	 * // Create an instance and initialize the random number generator with the current time.
+	 * var mt = new MersenneTwister(new Date().getTime());
+	 * // Uniform random number of 32-bit unsigned integer type.
+	 * var randomNumber = mt.nextInteger();
+	 */
+	function class__MersenneTwister__(){
 	var N = 624, M = 397;
 	var MAG01 = [0x0, 0x9908b0df];
-
+	
 	/**
 	 * Generate a new random number generator.
 	 * Set the seed according to the argument.
@@ -178,7 +183,7 @@ function class__MersenneTwister__()
 	{
 		this.mt = new Array(N);
 		this.mti = N + 1;
-
+	
 		var a = arguments;
 		switch(a.length) {
 		case 0:
@@ -195,7 +200,7 @@ function class__MersenneTwister__()
 			break;
 		}
 	};
-
+	
 	/**
 	 * Set the seed for the random number generator.
 	 * 
@@ -222,13 +227,13 @@ function class__MersenneTwister__()
 				this.mti = N;
 				return;
 			}
-
+	
 			this.setSeed(19650218);
-
+	
 			var l = a[0].length;
 			var i = 1;
 			var j = 0;
-
+	
 			for(var k = N > l ? N : l; k != 0; --k) {
 				var s = this.mt[i - 1] ^ (this.mt[i - 1] >>> 30)
 				this.mt[i] = (this.mt[i]
@@ -243,7 +248,7 @@ function class__MersenneTwister__()
 				if(++j >= l)
 					j = 0;
 			}
-
+	
 			for(var k = N - 1; k != 0; --k) {
 				var s = this.mt[i - 1] ^ (this.mt[i - 1] >>> 30);
 				this.mt[i] = (this.mt[i]
@@ -255,7 +260,7 @@ function class__MersenneTwister__()
 					i = 1;
 				}
 			}
-
+	
 			this.mt[0] = 0x80000000;
 			return;
 		default:
@@ -266,7 +271,7 @@ function class__MersenneTwister__()
 			return;
 		}
 	};
-
+	
 	/**
 	 * Generates a pseudo-random numbers.
 	 * @param bits  The number of significant bits in the output value.; 0 &lt; bits &lt;= 32.
@@ -295,7 +300,7 @@ function class__MersenneTwister__()
 		y ^= y >>> 18;
 		return y >>> (32 - bits);
 	};
-
+	
 	/**
 	 * Generate a uniformly distributed boolean pseudo-random number.
 	 * @return  true or false
@@ -304,7 +309,7 @@ function class__MersenneTwister__()
 	{
 		return this.$next(1) == 1;
 	};
-
+	
 	/**
 	 * Generate a uniformly distributed unsigned 32-bit integer pseudo-random number.
 	 * @return  An unsigned 32-bit integer pseudo-random number, between 0 and 4294967295.
@@ -313,7 +318,7 @@ function class__MersenneTwister__()
 	{
 		return this.$next(32);
 	};
-
+	
 	/**
 	 * Generate a uniformly distributed unsigned 46-bit integer pseudo-random number.
 	 * Why 46
@@ -330,7 +335,7 @@ function class__MersenneTwister__()
 		// 2^(46 - [25]) = 2^21 = [2097152]
 		return this.$next(25) * 2097152 + this.$next(25);
 	};
-
+	
 	/**
 	 * Generate a 32-bit floating-point pseudo-random number with uniform distribution in the range 0.0 to 1.0.
 	 * @return  [0.0 1.0) of the half-open section.
@@ -339,7 +344,7 @@ function class__MersenneTwister__()
 	{
 		return this.$next(32) / 4294967296.0; // 2^32
 	};
-
+	
 	/**
 	 * Generate a 46-bit floating-point pseudo-random number with uniform distribution in the range 0.0 to 1.0.
 	 * Why 46 --> See #nextLong
@@ -350,33 +355,33 @@ function class__MersenneTwister__()
 		return (this.$next(25) * 2097152 + this.$next(25))
 			/ 70368744177664.0; // 2^46
 	};
-
-} class__MersenneTwister__();
-
-
-
-/**
- * Generate a floating-point pseudo-random numbers
- * in the half-open section [0 1.0) using Mersenne Twister.
- * It is used in the same way as Math.random.
- * 
- * e.g.
- * // Generate a floating-point value that is greater than or equal to 0 and less than 1.
- * var r = Math.mersenneTwisterRandom();
- */
-Math.mersenneTwisterRandom = function()
-{
+	
+	} class__MersenneTwister__();
+	
+	
+	
+	/**
+	* Generate a floating-point pseudo-random numbers
+	* in the half-open section [0 1.0) using Mersenne Twister.
+	* It is used in the same way as Math.random.
+	* 
+	* e.g.
+	* // Generate a floating-point value that is greater than or equal to 0 and less than 1.
+	* var r = Math.mersenneTwisterRandom();
+	*/
+	Math.mersenneTwisterRandom = function()
+	{
 	Math.__MERSENNE_TWISTER__ = new MersenneTwister();
-
+	
 	return function() {
 		return Math.__MERSENNE_TWISTER__.nextFloat();
 	}
-}();
+	}();
 </script>
 </head>
 <body>
 <h1>Sign-in/sign-out</h1>
-
+<div id="qrcode"></div>
 <div id="contain"></div>
 <form onsubmit="event.preventDefault(); submitcode();">
   <select name="sign" id="sign" onchange="signChange()" required>
@@ -408,6 +413,10 @@ Math.mersenneTwisterRandom = function()
 </form><br>
 
 <script>
+let qrcode = new QRCode(document.getElementById("qrcode"));
+
+qrcode.makeCode(window.location.href);
+
 function removeElemDelay(element, delay) {
   setTimeout(() => {
     element.style.animation = "fade-out 0.5s ease-in";
@@ -473,14 +482,14 @@ async function submitcode(){
   aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElemDelay(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span><strong>Sending...</strong>';
   document.getElementById("contain").appendChild(aler);
   if(await sheetLog(inout, email, reason)){
-  	removeElemDelay(aler, 0);
+    removeElemDelay(aler, 0);
     aler = document.createElement("div");
     aler.className = "alert";
     aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElemDelay(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span><strong>Successfully signed '+inout+'!</strong> Email: '+email+', Reason: '+reason+'.';
     document.getElementById("contain").appendChild(aler);
     removeElemDelay(aler, 4000);
   }else{
-  	removeElemDelay(aler, 0);
+    removeElemDelay(aler, 0);
     aler = document.createElement("div");
     aler.className = "failalert";
     aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElemDelay(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span><strong>Failed to sign in! Please try again.';
