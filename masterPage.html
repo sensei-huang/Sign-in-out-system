@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sign-in</title>
+<style>
+body,html { 
+  font-family: Georgia, serif;
+}
+
+#qrcode {
+  margin: 10px 0;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.alert {
+  padding: 10px;
+  background-color: #00B000;
+  border-style: solid;
+  border-color: #009600;
+  border-width: 3px;
+  border-radius: 15px;
+  color: white;
+  opacity: 1;
+  animation: fade-in 0.5s ease-in;
+}
+
+.sendingalert {
+  padding: 10px;
+  background-color: #D0D000;
+  border-style: solid;
+  border-color: #B0B000;
+  border-width: 3px;
+  border-radius: 15px;
+  color: white;
+  opacity: 1;
+  animation: fade-in 0.5s ease-in;
+}
+
+.failalert {
+  padding: 10px;
+  background-color: #B00000;
+  border-style: solid;
+  border-color: #750000;
+  border-width: 3px;
+  border-radius: 15px;
+  color: white;
+  opacity: 1;
+  animation: fade-in 0.5s ease-in;
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes fade-out {
+  0% { opacity: 1; font-size: 100%; height: 100%; }
+  100% { opacity: 0; padding: 0px; font-size: 0%; height: 0%; display: "none"; }
+}
+
+input[type=text]:hover:not(:focus), input[type=email]:hover:not(:focus), select:hover:not(:focus) {
+  background: #DDDDDD;
+}
+
+select:focus {
+  box-shadow: 0px 0px 10px 1.5px #555555;
+  border-radius: 10px;
+  padding: 3px;
+}
+
+input[type=submit]:hover:not(:focus) {
+  background: #DDDDDD;
+  box-shadow: 0px 0px 10px 1.5px #555555;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+input[type=submit] {
+  outline: none;
+  margin: 3px 0px 3px 0px;
+  padding: 1px;
+  border: 2px solid #555555;
+  padding: 3px;
+  border-radius: 10px;
+}
+
+input, select{
+  font-family:inherit;
+  transition: all 150ms linear;
+}
+
+select{
+  outline: none;
+  margin: 3px 0px 3px 0px;
+  padding: 1px;
+  border: 2px solid #555555;
+  border-radius: 20px;
+}
+
+input[type=text], input[type=email]{
+  outline: none;
+  margin: 3px 0px 3px 0px;
+  padding: 3px;
+  border: 2px solid #555555;
+  border-radius: 20px;
+}
+
+input[type=text]:focus, input[type=email]:focus{
+  box-shadow: 0px 0px 10px 1.5px #555555;
+  border-radius: 10px;
+  padding: 5px;
+}
+</style>
+<script src=
+"https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+	/*
+	 * -*- coding: utf-8 -*-
+	 * version: 1.0.1
+	 * updated: 2021/3/5
+	 * mail: yunos@graviness.com
+	 * home: https://www.graviness.com/
+	 * ref.:
+	 *  http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/mt.html
+	 */
+	
+	
+	/**
+	 * Mersenne Twister class
+	 * 
+	 * Mersenne Twister that is one of a method of generating pseudo-random numbers, is implemented.
+	 * 
+	 * Generates uniform random numbers of unsigned integer type or floating-point type by the Mersenne Twister.
+	 * It uses a single integer to initialize the random number generation,
+	 * but can also use arbitrary bit-width values using an array if needed.
+	 * 
+	 * This class is a JavaScript language port of the following site (C language source).
+	 * http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/CODES/mt19937ar.c
+	 * The external interface is implemented with reference to java.util.Random class of Java(TM) language.
+	 * http://sdc.sun.co.jp/java/docs/j2se/1.4/ja/docs/ja/api/java/util/Random.html
+	 * 
+	 * The performance is about one-half that of the built-in Math.random,
+	 * but the quality of the random numbers is as shown in the site concerned.
+	 * 
+	 * e.g.
+	 * // Create an instance and initialize the random number generator with the current time.
+	 * var mt = new MersenneTwister(new Date().getTime());
+	 * // Uniform random number of 32-bit unsigned integer type.
+	 * var randomNumber = mt.nextInteger();
+	 */
+	function class__MersenneTwister__(){
+	var N = 624, M = 397;
+	var MAG01 = [0x0, 0x9908b0df];
+	
+	/**
+	 * Generate a new random number generator.
+	 * Set the seed according to the argument.
+	 * 
+	 * @param (None)    Generates a new random number generator.
+	 * The current time is used for the seed.
+	 * @see Date#getTime()
+	 * ---
+	 * @param num
+	 * @see #setSeed(num)
+	 * ---
+	 * @param num[]
+	 * @see #setSeed(num[])
+	 * ---
+	 * @param num1, ...
+	 * @see #setSeed(num1, ...)
+	 */
+	MersenneTwister = function()
+	{
+		this.mt = new Array(N);
+		this.mti = N + 1;
+	
+		var a = arguments;
+		switch(a.length) {
+		case 0:
+			this.setSeed(new Date().getTime());
+			break;
+		case 1:
+			this.setSeed(a[0]);
+			break;
+		default:
+			var seeds = new Array();
+			for(var i = 0; i < a.length; ++i)
+				seeds.push(a[i]);
+			this.setSeed(seeds);
+			break;
+		}
+	};
+	
+	/**
+	 * Set the seed for the random number generator.
+	 * 
+	 * @param num    Set the seed for the random number generator using a single number.
+	 * ---
+	 * @param num[]  Set the seed for the random number generator using multiple numbers.
+	 * ---
+	 * @param num1, ... Set the seed for the random number generator using multiple numbers.
+	 */
+	MersenneTwister.prototype.setSeed = function()
+	{
+		var a = arguments;
+		switch(a.length) {
+		case 1:
+			if(a[0].constructor === Number) {
+				this.mt[0]= a[0];
+				for(var i = 1; i < N; ++i) {
+					var s = this.mt[i - 1] ^ (this.mt[i - 1] >>> 30);
+					this.mt[i] = ((1812433253 * ((s & 0xffff0000) >>> 16))
+							<< 16)
+						+ 1812433253 * (s & 0x0000ffff)
+						+ i;
+				}
+				this.mti = N;
+				return;
+			}
+	
+			this.setSeed(19650218);
+	
+			var l = a[0].length;
+			var i = 1;
+			var j = 0;
+	
+			for(var k = N > l ? N : l; k != 0; --k) {
+				var s = this.mt[i - 1] ^ (this.mt[i - 1] >>> 30)
+				this.mt[i] = (this.mt[i]
+						^ (((1664525 * ((s & 0xffff0000) >>> 16)) << 16)
+							+ 1664525 * (s & 0x0000ffff)))
+					+ a[0][j]
+					+ j;
+				if(++i >= N) {
+					this.mt[0] = this.mt[N - 1];
+					i = 1;
+				}
+				if(++j >= l)
+					j = 0;
+			}
+	
+			for(var k = N - 1; k != 0; --k) {
+				var s = this.mt[i - 1] ^ (this.mt[i - 1] >>> 30);
+				this.mt[i] = (this.mt[i]
+						^ (((1566083941 * ((s & 0xffff0000) >>> 16)) << 16)
+							+ 1566083941 * (s & 0x0000ffff)))
+					- i;
+				if(++i >= N) {
+					this.mt[0] = this.mt[N-1];
+					i = 1;
+				}
+			}
+	
+			this.mt[0] = 0x80000000;
+			return;
+		default:
+			var seeds = new Array();
+			for(var i = 0; i < a.length; ++i)
+				seeds.push(a[i]);
+			this.setSeed(seeds);
+			return;
+		}
+	};
+	
+	/**
+	 * Generates a pseudo-random numbers.
+	 * @param bits  The number of significant bits in the output value.; 0 &lt; bits &lt;= 32.
+	 * @return A pseudo-random number.
+	 */
+	MersenneTwister.prototype.$next = function(bits)
+	{
+		if(this.mti >= N) {
+			var x = 0;
+			for(var k = 0; k < N - M; ++k) {
+				x = (this.mt[k] & 0x80000000) | (this.mt[k + 1] & 0x7fffffff);
+				this.mt[k] = this.mt[k + M] ^ (x >>> 1) ^ MAG01[x & 0x1];
+			}
+			for(var k = N - M; k < N - 1; ++k) {
+				x = (this.mt[k] & 0x80000000) | (this.mt[k + 1] & 0x7fffffff);
+				this.mt[k] = this.mt[k + (M - N)] ^ (x >>> 1) ^ MAG01[x & 0x1];
+			}
+			x = (this.mt[N - 1] & 0x80000000) | (this.mt[0] & 0x7fffffff);
+			this.mt[N - 1] = this.mt[M - 1] ^ (x >>> 1) ^ MAG01[x & 0x1];
+			this.mti = 0;
+		}
+		var y = this.mt[this.mti++];
+		y ^= y >>> 11;
+		y ^= (y << 7) & 0x9d2c5680;
+		y ^= (y << 15) & 0xefc60000;
+		y ^= y >>> 18;
+		return y >>> (32 - bits);
+	};
+	
+	/**
+	 * Generate a uniformly distributed boolean pseudo-random number.
+	 * @return  true or false
+	 */
+	MersenneTwister.prototype.nextBoolean = function()
+	{
+		return this.$next(1) == 1;
+	};
+	
+	/**
+	 * Generate a uniformly distributed unsigned 32-bit integer pseudo-random number.
+	 * @return  An unsigned 32-bit integer pseudo-random number, between 0 and 4294967295.
+	 */
+	MersenneTwister.prototype.nextInteger = function()
+	{
+		return this.$next(32);
+	};
+	
+	/**
+	 * Generate a uniformly distributed unsigned 46-bit integer pseudo-random number.
+	 * Why 46
+	 *  The JavaScript language specification has restrictions regarding number of the bits on operating a bitwise and integer.
+	 *  In this implementation of the Mersenne Twister, where high speed was important,
+	 *  the operation result was broken at 48 bits or more.
+	 *  Therefore, we decided to use the safe 46 bits.
+	 * @return  An unsigned 46-bit integer pseudo-random number, between 0 and 70368744177663.
+	 */
+	MersenneTwister.prototype.nextLong = function()
+	{
+		// NOTE: The calculation result will be broken if it is more than 48 bits.
+		// (46 - 32) = 14 = [7] + [7], 32 - [7] = [25], 32 - [7] = [25]
+		// 2^(46 - [25]) = 2^21 = [2097152]
+		return this.$next(25) * 2097152 + this.$next(25);
+	};
+	
+	/**
+	 * Generate a 32-bit floating-point pseudo-random number with uniform distribution in the range 0.0 to 1.0.
+	 * @return  [0.0 1.0) of the half-open section.
+	 */
+	MersenneTwister.prototype.nextFloat = function()
+	{
+		return this.$next(32) / 4294967296.0; // 2^32
+	};
+	
+	/**
+	 * Generate a 46-bit floating-point pseudo-random number with uniform distribution in the range 0.0 to 1.0.
+	 * Why 46 --> See #nextLong
+	 * @return  [0.0 1.0) of the half-open section.
+	 */
+	MersenneTwister.prototype.nextDouble = function()
+	{
+		return (this.$next(25) * 2097152 + this.$next(25))
+			/ 70368744177664.0; // 2^46
+	};
+	
+	} class__MersenneTwister__();
+	
+	
+	
+	/**
+	* Generate a floating-point pseudo-random numbers
+	* in the half-open section [0 1.0) using Mersenne Twister.
+	* It is used in the same way as Math.random.
+	* 
+	* e.g.
+	* // Generate a floating-point value that is greater than or equal to 0 and less than 1.
+	* var r = Math.mersenneTwisterRandom();
+	*/
+	Math.mersenneTwisterRandom = function()
+	{
+	Math.__MERSENNE_TWISTER__ = new MersenneTwister();
+	
+	return function() {
+		return Math.__MERSENNE_TWISTER__.nextFloat();
+	}
+	}();
+</script>
+</head>
+<body>
+<h1>Sign-in/sign-out</h1>
+<div id="qrcode"></div>
+<div id="verifycode" style="font-size: 25px; padding: 5px 0"></div>
+<div id="contain"></div>
+<form onsubmit="event.preventDefault(); submitcode();">
+  <select name="sign" id="sign" onchange="signChange()" required>
+    <option value="" selected disabled hidden>-- Signin or signout --</option>
+    <option value="in">Sign in</option>
+    <option value="out">Sign out</option>
+  </select><br>
+  
+  <input id="email" type="email" name="email" pattern=".+\..+@lphs\.school\.nz" placeholder="School Email" hidden required oninvalid="this.setCustomValidity('Please use your school email. E.g. john.doe@lphs.school.nz')" oninput="this.setCustomValidity('')"><br>
+  
+  <select name="inreason" id="inreason" onchange="reasonChange(1)" required hidden oninvalid="this.setCustomValidity('Please select a reason.')" oninput="this.setCustomValidity('')">
+    <option value="" id="indef" selected disabled hidden>-- Reason --</option>
+    <option value="Late">Late</option>
+    <option value="Appointment">Appointment</option>
+    <option value="other">Other</option>
+  </select>
+  
+  
+  <select name="outreason" id="outreason" onchange="reasonChange(2)" required hidden oninvalid="this.setCustomValidity('Please select a reason.')" oninput="this.setCustomValidity('')">
+    <option value="" id="outdef" selected disabled hidden>-- Reason --</option>
+    <option value="Year 13">Year 13</option>
+    <option value="Appointment">Appointment</option>
+    <option value="other">Other</option>
+  </select>
+  <input placeholder="Reason" id="other" hidden type="text" oninvalid="this.setCustomValidity('Please enter a reason.')" oninput="this.setCustomValidity('')">
+  <br>
+  <input placeholder="Verification code" id="verify" type="text" pattern=".{4}" maxlength="4" oninvalid="this.setCustomValidity('Please enter verification code. E.g. AB12')" oninput="handleInput(event); this.setCustomValidity('');" required hidden>
+  
+  <br>
+  <input type="submit" id="submit" hidden>
+</form><br>
+
+<script>
+function handleInput(e) {
+  var ss = e.target.selectionStart;
+  var se = e.target.selectionEnd;
+  if(/[^A-z0-9]/.test(e.target.value)){
+  	e.target.value = e.target.value.replaceAll(/[^A-z0-9]/g, "");
+  }else{
+  	e.target.value = e.target.value.toUpperCase();
+  }
+  e.target.selectionStart = ss;
+  e.target.selectionEnd = se;
+}
+
+function getVerifyCodeFromURL(){
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  if(urlParams.has('code')){
+  	document.getElementById("verify").value = urlParams.get('code');
+  }
+}
+
+function removeElemDelay(element, delay) {
+  setTimeout(() => {
+    element.style.animation = "fade-out 0.5s ease-in";
+    element.style.opacity = 1;
+    setTimeout(() => {
+      if(element && element.parentNode){
+        element.style.display = "none";
+        element.remove();
+      }
+    }, 500);
+  }, delay);
+}
+
+function signChange(){
+  var inoutstr = document.getElementById("sign").value;
+  var outinstr;
+  if(inoutstr == "in"){
+  	outinstr = "out";
+  }else{
+    outinstr = "in";
+  }
+  document.getElementById(inoutstr+"reason").hidden = false;
+  document.getElementById(inoutstr+"reason").required = true;
+
+  document.getElementById(outinstr+"reason").hidden = true;
+  document.getElementById(outinstr+"reason").required = false;
+  
+  document.getElementById("other").hidden = true;
+  document.getElementById("other").required = false;
+  
+  document.getElementById("email").hidden = false;
+  document.getElementById("verify").hidden = false;
+  document.getElementById("outdef").selected = true;
+  document.getElementById("indef").selected = true;
+  document.getElementById("submit").hidden = false;
+}
+
+function reasonChange(inout){
+  var inoutstr;
+  if(inout == 1){
+    inoutstr = "in";
+  }else{
+    inoutstr = "out";
+  }
+  if(document.getElementById(inoutstr+"reason").value == "other"){
+    document.getElementById("other").hidden = false;
+    document.getElementById("other").required = true;
+    document.getElementById("other").value = "";
+  }else{
+    document.getElementById("other").hidden = true;
+    document.getElementById("other").required = false;
+  }
+}
+
+async function submitcode(){
+  var inout = document.getElementById("sign").value;
+  var email = document.getElementById("email").value;
+  var reason = document.getElementById(inout+"reason").value;
+  if(reason == "other"){
+  	reason = document.getElementById("other").value;
+  }
+  var aler = document.createElement("div");
+  aler.className = "sendingalert";
+  aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElemDelay(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span><strong>Sending...</strong>';
+  document.getElementById("contain").appendChild(aler);
+  if(await sheetLog(inout, email, reason)){
+    removeElemDelay(aler, 0);
+    aler = document.createElement("div");
+    aler.className = "alert";
+    aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElemDelay(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span><strong>Successfully signed '+inout+'!</strong> Email: '+email+', Reason: '+reason+'.';
+    document.getElementById("contain").appendChild(aler);
+    removeElemDelay(aler, 4000);
+  }else{
+    removeElemDelay(aler, 0);
+    aler = document.createElement("div");
+    aler.className = "failalert";
+    aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElemDelay(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span><strong>Failed to sign in! Please try again.';
+    document.getElementById("contain").appendChild(aler);
+    removeElemDelay(aler, 4000);
+  }
+}
+
+function convertBase(value, from_base, to_base) {
+  var range = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  var from_range = range.slice(0, from_base);
+  var to_range = range.slice(0, to_base);
+  
+  var dec_value = value.split('').reverse().reduce(function (carry, digit, index) {
+    if (from_range.indexOf(digit) === -1) throw new Error('Invalid digit `'+digit+'` for base '+from_base+'.');
+    return carry += from_range.indexOf(digit) * (Math.pow(from_base, index));
+  }, 0);
+  
+  var new_value = '';
+  while (dec_value > 0) {
+    new_value = to_range[dec_value % to_base] + new_value;
+    dec_value = (dec_value - (dec_value % to_base)) / to_base;
+  }
+  return new_value || '0';
+}
+
+function generateCode(){
+  var d = new Date();
+  let seed = d.getDate()+d.getMonth()*31+d.getFullYear()*372;
+  var MT = new MersenneTwister(seed);
+  return convertBase(String(MT.nextLong()), 10, 36).slice(-4);
+}
+
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6l7S2KUZZG_v6Ks1nLkFMGOZRrxmIVK6B2g3rSN0bHsBp82ss2MmiUAgrwqYBC08R/exec";
+
+async function sheetLog(inout, name, reason){
+  try {
+    const response = await fetch(SCRIPT_URL+"?met=1&inout="+inout+"&name="+name+"&reason="+reason, {mode: 'no-cors'});
+    const tex = await response.text();
+    if(tex == "ERROR"){
+      console.error("Error occured form google sheets api when calling function sheetLog");
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error(error.message);
+    return false;
+  }
+  return true;
+}
+
+async function cardLog(name, data){
+  try {
+    const response = await fetch(SCRIPT_URL+"?met=2&name="+name+"&data="+data, {mode: 'no-cors'});
+    const tex = await response.text();
+    if(tex == "ERROR"){
+      console.error("Error occured form google sheets api when calling function sheetLog");
+      return false;
+    }else{
+      return true;
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+  return false;
+}
+
+async function getData() {
+  try {
+    const response = await fetch(SCRIPT_URL+"?met=0");
+    const tex = await response.text();
+    if(tex == "ERROR"){
+      console.error("Error occured form google sheets api when calling function getData");
+      return;
+    }
+    document.getElementById("content").innerHTML = tex;
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+getVerifyCodeFromURL();
+let qrcode = new QRCode(document.getElementById("qrcode"));
+qrcode.makeCode(window.location.href);
+document.getElementById("verifycode").innerHTML = "Verification code: "+generateCode();
+</script>
+  
+</body>
+</html>
