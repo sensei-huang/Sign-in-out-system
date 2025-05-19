@@ -8,7 +8,7 @@ body,html {
 }
 
 #qrcode {
-  margin: 20px 0;
+  margin: 10px 0;
 }
 
 .closebtn {
@@ -382,6 +382,7 @@ input[type=text]:focus, input[type=email]:focus{
 <body>
 <h1>Sign-in/sign-out</h1>
 <div id="qrcode"></div>
+<div id="verifycode" style="font-size: 25px; padding: 5px 0"></div>
 <div id="contain"></div>
 <form onsubmit="event.preventDefault(); submitcode();">
   <select name="sign" id="sign" onchange="signChange()" required>
@@ -408,7 +409,7 @@ input[type=text]:focus, input[type=email]:focus{
   </select>
   <input placeholder="Reason" id="other" hidden type="text" oninvalid="this.setCustomValidity('Please enter a reason.')" oninput="this.setCustomValidity('')">
   <br>
-  <input placeholder="Verification code" id="verify" type="text" oninvalid="this.setCustomValidity('Please enter verification code. E.g. AB12')" oninput="handleInput(event); this.setCustomValidity('');" maxlength="4" required hidden>
+  <input placeholder="Verification code" id="verify" type="text" pattern=".{4}" maxlength="4" oninvalid="this.setCustomValidity('Please enter verification code. E.g. AB12')" oninput="handleInput(event); this.setCustomValidity('');" required hidden>
   
   <br>
   <input type="submit" id="submit" hidden>
@@ -593,6 +594,7 @@ async function getData() {
 getVerifyCodeFromURL();
 let qrcode = new QRCode(document.getElementById("qrcode"));
 qrcode.makeCode(window.location.href);
+document.getElementById("verifycode").innerHTML = "Verification code: "+generateCode();
 </script>
   
 </body>
