@@ -7,9 +7,34 @@ body,html {
   font-family: Georgia, serif;
 }
 
-#qrcode {
+html {
+    min-height:100%;
+    position:relative;
+}
+body {
+    height:100%;
+}
+
+#dragbar {
+  top: 0;
+  bottom: 0;
+  width: 7px;
+  left: 30px;
+  height: 100%;
+  position: absolute;
+  cursor: col-resize;
+  background-color: #E7E9EB;
+  overflow:hidden;
+}
+
+.right {
   margin: 10px 30px 0px 0px;
   float: right;
+}
+
+.left {
+  margin: 10px 30px 0px 0px;
+  float: left;
 }
 
 .closebtn {
@@ -381,9 +406,13 @@ input[type=text]:focus, input[type=email]:focus{
 </script>
 </head>
 <body>
+<div class="right">
+  <div id="qrcode"></div>
+  <div id="verifycode" style="font-size: 25px; padding: 5px 0"></div>
+</div>
+<div id="dragbar"></div>
+<div class="left">
 <h1>Sign-in/sign-out</h1>
-<div id="qrcode"></div>
-<div id="verifycode" style="font-size: 25px; padding: 5px 0"></div>
 <div id="contain"></div>
 <form onsubmit="event.preventDefault(); submitcode();">
   <select name="sign" id="sign" onchange="signChange()" required>
@@ -412,8 +441,27 @@ input[type=text]:focus, input[type=email]:focus{
   <br>
   <input type="submit" id="submit" hidden>
 </form><br>
-
+</div>
 <script>
+var isDown = false;
+function initDragBar(){
+  document.getElementById("dragbar").style.left = parseInt(document.getElementsByClassName("left")[0].clientWidth)+30+"px";
+  document.getElementById("dragbar").addEventListener('mousedown', function(e) {
+    isDown = true;
+  }, true);
+  
+  document.getElementById("dragbar").addEventListener('mouseup', function() {
+    isDown = false;
+  }, true);
+  
+  document.addEventListener('mousemove', function(e) {
+    e.preventDefault();
+    if(isDown){
+      document.getElementById("dragbar").style.left = e.clientX+"px";
+    }
+  }, true);
+}
+
 function removeElemDelay(element, delay) {
   setTimeout(() => {
     element.style.animation = "fade-out 0.5s ease-in";
@@ -568,9 +616,17 @@ async function getData() {
   }
 }
 
-let qrcode = new QRCode(document.getElementById("qrcode"));
-qrcode.makeCode(window.location.href+"?code="+generateCode());
+var height = Math.max(parseInt(document.getElementById("dragbar").offsetHeight)-200, parseInt(document.body.clientWidth)-parseInt(document.getElementsByClassName("left")[0].clientWidth)-100);
+var qrcode = new QRCode(document.getElementById("qrcode"), {
+  text: window.location.href+"?code="+generateCode(),
+  width: height,
+  height: height,
+  colorDark : "#000000",
+  colorLight : "#ffffff",
+  correctLevel : QRCode.CorrectLevel.H
+});
 document.getElementById("verifycode").innerHTML = "Verification code: "+generateCode();
+initDragBar();
 </script>
   
 </body>
