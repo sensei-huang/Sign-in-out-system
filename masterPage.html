@@ -37,7 +37,6 @@ body {
 
 .right {
   padding: 10px;
-  width: 60%;
   float: right;
   align-items: center;
   justify-content: center;
@@ -460,11 +459,13 @@ var isDown = false;
 var initWidth = parseInt(document.getElementsByClassName("left")[0].clientWidth)+30;
 function initDragBar(){
   document.getElementById("dragbar").style.left = initWidth+"px";
+  document.getElementsByClassName("left")[0].style.width = initWidth+"px";
+  document.getElementsByClassName("right")[0].style.width = parseInt(document.body.offsetWidth)-initWidth-50+"px";
   document.getElementById("dragbar").addEventListener('mousedown', function(e) {
     isDown = true;
   }, true);
   
-  document.getElementById("dragbar").addEventListener('mouseup', function() {
+  document.body.addEventListener('mouseup', function() {
     isDown = false;
   }, true);
   
@@ -484,6 +485,7 @@ function initDragBar(){
       });
     }
   }, true);
+  document.getElementById("dragbar").click();
 }
 
 function removeElemDelay(element, delay) {
