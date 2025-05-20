@@ -27,14 +27,27 @@ body {
   overflow:hidden;
 }
 
-.right {
-  margin: 10px 30px 0px 0px;
-  float: right;
+.left, .right {
+  user-select: none;
 }
 
 .left {
-  margin: 10px 30px 0px 0px;
   float: left;
+}
+
+.right {
+  padding: 10px;
+  width: 60%;
+  float: right;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.right * {
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .closebtn {
@@ -444,8 +457,9 @@ input[type=text]:focus, input[type=email]:focus{
 </div>
 <script>
 var isDown = false;
+var initWidth = parseInt(document.getElementsByClassName("left")[0].clientWidth)+30;
 function initDragBar(){
-  document.getElementById("dragbar").style.left = parseInt(document.getElementsByClassName("left")[0].clientWidth)+30+"px";
+  document.getElementById("dragbar").style.left = initWidth+"px";
   document.getElementById("dragbar").addEventListener('mousedown', function(e) {
     isDown = true;
   }, true);
@@ -457,7 +471,17 @@ function initDragBar(){
   document.addEventListener('mousemove', function(e) {
     e.preventDefault();
     if(isDown){
-      document.getElementById("dragbar").style.left = e.clientX+"px";
+      var x = Math.min(Math.max(e.clientX, initWidth), parseInt(document.body.offsetWidth)-350);
+      document.getElementById("dragbar").style.left = x+"px";
+      document.getElementsByClassName("left")[0].style.width = x+"px";
+      var size = parseInt(document.body.offsetWidth)-x-50;
+      document.getElementsByClassName("right")[0].style.width = size+"px";
+      document.getElementById("qrcode").innerHTML = "";
+      new QRCode(document.getElementById("qrcode"), {
+        text: window.location.href+"?code="+generateCode(),
+        width: size,
+        height: size
+      });
     }
   }, true);
 }
@@ -616,14 +640,11 @@ async function getData() {
   }
 }
 
-var height = Math.max(parseInt(document.getElementById("dragbar").offsetHeight)-200, parseInt(document.body.clientWidth)-parseInt(document.getElementsByClassName("left")[0].clientWidth)-100);
-var qrcode = new QRCode(document.getElementById("qrcode"), {
+var height = parseInt(document.body.offsetWidth)-initWidth-50;
+new QRCode(document.getElementById("qrcode"), {
   text: window.location.href+"?code="+generateCode(),
   width: height,
-  height: height,
-  colorDark : "#000000",
-  colorLight : "#ffffff",
-  correctLevel : QRCode.CorrectLevel.H
+  height: height
 });
 document.getElementById("verifycode").innerHTML = "Verification code: "+generateCode();
 initDragBar();
