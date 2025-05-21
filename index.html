@@ -25,32 +25,8 @@ body,html {
 .alert {
   padding: 10px;
   background-color: #00B000;
-  border-style: solid;
   border-color: #009600;
-  border-width: 3px;
-  border-radius: 15px;
-  color: white;
-  opacity: 1;
-  animation: fade-in 0.5s ease-in;
-}
-
-.sendingalert {
-  padding: 10px;
-  background-color: #D0D000;
   border-style: solid;
-  border-color: #B0B000;
-  border-width: 3px;
-  border-radius: 15px;
-  color: white;
-  opacity: 1;
-  animation: fade-in 0.5s ease-in;
-}
-
-.failalert {
-  padding: 10px;
-  background-color: #B00000;
-  border-style: solid;
-  border-color: #750000;
   border-width: 3px;
   border-radius: 15px;
   color: white;
@@ -381,8 +357,6 @@ input[type=text]:focus, input[type=email]:focus{
 </head>
 <body>
 <h1>Sign-in/sign-out</h1>
-<div id="qrcode"></div>
-<div id="verifycode" style="font-size: 25px; padding: 5px 0"></div>
 <div id="contain"></div>
 <form onsubmit="event.preventDefault(); submitcode();">
   <select name="sign" id="sign" onchange="signChange()" required>
@@ -490,6 +464,15 @@ function reasonChange(inout){
   }
 }
 
+function createAlert(borderColor, backgroundColor, HTML){
+  var aler = document.createElement("div");
+  aler.className = "alert";
+  aler.style.borderColor = borderColor;
+  aler.style.backgroundColor = backgroundColor;
+  aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElemDelay(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span>'+HTML;
+  return aler;
+}
+
 async function submitcode(){
   var inout = document.getElementById("sign").value;
   var email = document.getElementById("email").value;
@@ -497,22 +480,22 @@ async function submitcode(){
   if(reason == "other"){
   	reason = document.getElementById("other").value;
   }
-  var aler = document.createElement("div");
-  aler.className = "sendingalert";
-  aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElemDelay(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span><strong>Sending...</strong>';
-  document.getElementById("contain").appendChild(aler);
-  if(await sheetLog(inout, email, reason)){
-    removeElemDelay(aler, 0);
-    aler = document.createElement("div");
-    aler.className = "alert";
-    aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElemDelay(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span><strong>Successfully signed '+inout+'!</strong> Email: '+email+', Reason: '+reason+'.';
+  if(document.getElementById("verify").value == generateCode()){
+    var aler = createAlert("#B0B000", "#D0D000", "<strong>Sending...</strong>");
     document.getElementById("contain").appendChild(aler);
-    removeElemDelay(aler, 4000);
+    if(await sheetLog(inout, email, reason)){
+      removeElemDelay(aler, 0);
+      aler = createAlert("#00B000", "#009600", '<strong>Successfully signed '+inout+'!</strong> Email: '+email+', Reason: '+reason+'.');
+      document.getElementById("contain").appendChild(aler);
+      removeElemDelay(aler, 4000);
+    }else{
+      removeElemDelay(sending, 0);
+      aler = createAlert("#B00000", "#990000", "<strong>Failed to sign in! Please try again.</strong>");
+      document.getElementById("contain").appendChild(aler);
+      removeElemDelay(aler, 4000);
+    }
   }else{
-    removeElemDelay(aler, 0);
-    aler = document.createElement("div");
-    aler.className = "failalert";
-    aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElemDelay(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span><strong>Failed to sign in! Please try again.';
+    var aler = createAlert("#B00000", "#990000", "<strong>Incorrect verification code!</strong>");
     document.getElementById("contain").appendChild(aler);
     removeElemDelay(aler, 4000);
   }
@@ -522,12 +505,10 @@ function convertBase(value, from_base, to_base) {
   var range = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   var from_range = range.slice(0, from_base);
   var to_range = range.slice(0, to_base);
-  
   var dec_value = value.split('').reverse().reduce(function (carry, digit, index) {
     if (from_range.indexOf(digit) === -1) throw new Error('Invalid digit `'+digit+'` for base '+from_base+'.');
     return carry += from_range.indexOf(digit) * (Math.pow(from_base, index));
   }, 0);
-  
   var new_value = '';
   while (dec_value > 0) {
     new_value = to_range[dec_value % to_base] + new_value;
@@ -592,9 +573,6 @@ async function getData() {
 }
 
 getVerifyCodeFromURL();
-let qrcode = new QRCode(document.getElementById("qrcode"));
-qrcode.makeCode(window.location.href);
-document.getElementById("verifycode").innerHTML = "Verification code: "+generateCode();
 </script>
   
 </body>
