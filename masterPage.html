@@ -458,34 +458,55 @@ input[type=text]:focus, input[type=email]:focus{
 <script>
 var isDown = false;
 var initWidth = parseInt(document.getElementsByClassName("left")[0].clientWidth)+30;
+
+function mdown(e){
+  isDown = true;
+}
+
+function mup(e){
+  isDown = false;
+}
+
+function mmove(e){
+  var ex, ey;
+  if(e.type == 'touchmove'){
+    var touch = event.touches[0];
+    ex = touch.pageX;
+    ey = touch.pageY;
+  } else if (e.type == 'mousemove') {
+    ex = e.clientX;
+    ey = e.clientY;
+  }
+  e.preventDefault();
+  if(isDown){
+    var x = Math.min(Math.max(ex, initWidth), parseInt(document.body.offsetWidth)-350);
+    document.getElementById("dragbar").style.left = x+"px";
+    document.getElementsByClassName("left")[0].style.width = x+"px";
+    var size = parseInt(document.body.offsetWidth)-x-50;
+    document.getElementsByClassName("right")[0].style.width = size+"px";
+    document.getElementById("qrcode").innerHTML = "";
+    new QRCode(document.getElementById("qrcode"), {
+      text: window.location.href+"?code="+generateCode(),
+      width: size,
+      height: size
+    });
+  }
+}
+
 function initDragBar(){
   document.getElementById("dragbar").style.left = initWidth+"px";
   document.getElementsByClassName("left")[0].style.width = initWidth+"px";
   document.getElementsByClassName("right")[0].style.width = parseInt(document.body.offsetWidth)-initWidth-50+"px";
-  document.getElementById("dragbar").addEventListener('mousedown', function(e) {
-    isDown = true;
-  }, true);
   
-  document.body.addEventListener('mouseup', function() {
-    isDown = false;
-  }, true);
+  document.getElementById("dragbar").addEventListener('mousedown', (e) => {mdown(e)}, true);
+  document.getElementById("dragbar").addEventListener('touchstart', (e) => {mdown(e)}, true);
   
-  document.addEventListener('mousemove', function(e) {
-    e.preventDefault();
-    if(isDown){
-      var x = Math.min(Math.max(e.clientX, initWidth), parseInt(document.body.offsetWidth)-350);
-      document.getElementById("dragbar").style.left = x+"px";
-      document.getElementsByClassName("left")[0].style.width = x+"px";
-      var size = parseInt(document.body.offsetWidth)-x-50;
-      document.getElementsByClassName("right")[0].style.width = size+"px";
-      document.getElementById("qrcode").innerHTML = "";
-      new QRCode(document.getElementById("qrcode"), {
-        text: window.location.href+"?code="+generateCode(),
-        width: size,
-        height: size
-      });
-    }
-  }, true);
+  document.addEventListener('mouseup', (e) => {mup(e)}, true);
+  document.addEventListener('touchend', (e) => {mup(e)}, true);
+  
+  document.addEventListener('mousemove', (e) => {mmove(e)}, true);
+  document.addEventListener('touchmove', (e) => {mmove(e)}, true);
+  
   document.getElementById("dragbar").click();
 }
 
