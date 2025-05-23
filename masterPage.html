@@ -37,17 +37,19 @@ body {
 }
 
 .right {
-  padding: 10px;
   float: right;
+  display: flex;
   align-items: center;
   justify-content: center;
-  vertical-align: middle;
+  height: 100vh;
 }
 
-.right * {
+#rightcon {
+  position: relative;
+  margin: auto;
   max-width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
+  align-items: center;
+  text-align: center;
 }
 
 .closebtn {
@@ -420,8 +422,10 @@ input[type=text]:focus, input[type=email]:focus{
 </head>
 <body>
 <div class="right">
-  <div id="qrcode"></div>
-  <div id="verifycode" style="font-size: 25px; padding: 5px 0"></div>
+  <div id="rightcon">
+    <div id="qrcode"></div>
+    <div id="verifycode" style="font-size: 25px; padding: 5px 0"></div>
+  </div>
 </div>
 <div id="dragbar"></div>
 <div class="left">
@@ -483,7 +487,7 @@ function mmove(e){
     document.getElementById("dragbar").style.left = x+"px";
     document.getElementsByClassName("left")[0].style.width = x+"px";
     var size = parseInt(document.body.offsetWidth)-x-50;
-    document.getElementsByClassName("right")[0].style.width = size+"px";
+    document.getElementsByClassName("right")[0].style.width = parseInt(document.body.offsetWidth)-x+"px";
     document.getElementById("qrcode").innerHTML = "";
     new QRCode(document.getElementById("qrcode"), {
       text: window.location.href+"?code="+generateCode(),
@@ -496,7 +500,7 @@ function mmove(e){
 function initDragBar(){
   document.getElementById("dragbar").style.left = initWidth+"px";
   document.getElementsByClassName("left")[0].style.width = initWidth+"px";
-  document.getElementsByClassName("right")[0].style.width = parseInt(document.body.offsetWidth)-initWidth-50+"px";
+  document.getElementsByClassName("right")[0].style.width = parseInt(document.body.offsetWidth)-initWidth-30+"px";
   
   document.getElementById("dragbar").addEventListener('mousedown', (e) => {mdown(e)}, true);
   document.getElementById("dragbar").addEventListener('touchstart', (e) => {mdown(e)}, true);
