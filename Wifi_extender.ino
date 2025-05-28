@@ -22,10 +22,7 @@ struct wifis {
 };
 
 wifis wifilist[] = {
-  {"LPHS_BYOD", "kapukataumahaka"}, 
-  {"Spirit123", "UC9T2JLKLP"}, 
-  {"vodafoneED4376-5", "Godislove"}, 
-  {"Otago Campus Christians", "lordjesus"}
+  {"LPHS_BYOD", "kapukataumahaka"}
 };
 
 void addWifi(){
@@ -68,7 +65,7 @@ void setup() {
 
   WiFi.softAPConfig(  // enable AP, with android-compatible google domain
     IPAddress(172, 217, 28, 254), IPAddress(172, 217, 28, 254), IPAddress(255, 255, 255, 0));
-  WiFi.softAP("Proxime accessit", "HopeHuang");
+  WiFi.softAP("iPad", "password");
   Serial.printf("AP: %s\n", WiFi.softAPIP().toString().c_str());
 
   Serial.printf("Heap before: %d\n", ESP.getFreeHeap());
