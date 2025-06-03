@@ -20,9 +20,7 @@ function getCookie(cname) {
   return "";
 }
 if(getCookie("pass") != "password"){
-  var myWindow = window.open("", "_self");
-  myWindow.document.write("");
-  setTimeout(function(){myWindow.close();},1);
+  document.childNodes[1].remove();
 }
 </script>
 <style>
