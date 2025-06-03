@@ -3,6 +3,26 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sign-in</title>
+<script>
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+if(getCookie("pass") != "password"){
+  window.close();
+}
+</script>
 <style>
 body,html { 
   font-family: Georgia, serif;
@@ -462,6 +482,18 @@ input[type=text]:focus, input[type=email]:focus{
 <script>
 var isDown = false;
 var initWidth = parseInt(document.getElementsByClassName("left")[0].clientWidth)+30;
+var address;
+
+function getCard(){
+  xhr = new XMLHttpRequest();
+  xhr.open("GET", "http://info.local/address", true);
+  xhr.onreadystatechange = function() {
+    if(xhr.readyState == 4 && xhr.status == 200){
+      address = xhr.responseText;
+    }
+  };
+  xhr.send(null);
+}
 
 function mdown(e){
   isDown = true;
