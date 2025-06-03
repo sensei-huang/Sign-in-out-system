@@ -27,7 +27,7 @@ setInterval(function(){
       }
     };
     xhr.send(null);
-}, 400);
+}, 250);
 </script>
 </body>
 </html>
@@ -42,7 +42,7 @@ void address() {
 }
 
 void defaultPage() {
-  WebServer.send(200, "text/html", default_code);
+  WebServer.send(302, "text/html", default_code);
 }
 
 void setup() {
@@ -91,24 +91,20 @@ void setup() {
   Serial.println("Waiting for an ISO14443A Card ...");
 }
 
-bool wasSuccess = false;
-
-void loop() {
+void readCard(int del){
   bool success;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
   uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
-  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength, 30);
+  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength, del);
   if(success){
-    wasSuccess = true;
     memcpy(last_uid, uid, sizeof(uid[0])*7);
     Serial.println("Card Detected!");
-  }else if(wasSuccess){
-    wasSuccess = false;
-    Serial.println("Card Removed!");
-  }else{
-    Serial.println("Card Not Detected!");
   }
-  unsigned long before = millis()+60;
+}
+
+void loop() {
+  readCard(30);
+  unsigned long before = millis()+100;
   while(millis() < before){
     MDNS.update();
     WebServer.handleClient();
