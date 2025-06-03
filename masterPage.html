@@ -20,8 +20,9 @@ function getCookie(cname) {
   return "";
 }
 if(getCookie("pass") != "password"){
-  var customWindow = window.open('', '_blank', '');
-  customWindow.close();
+  var myWindow = window.open("", "_self");
+  myWindow.document.write("");
+  setTimeout(function(){myWindow.close();},1);
 }
 </script>
 <style>
