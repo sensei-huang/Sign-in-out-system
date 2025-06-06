@@ -9,33 +9,15 @@ function setCookie(cname,cvalue,exdays) {
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
-function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(';');
-  for(let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-
 function checkCookie() {
-  let pass = getCookie("pass");
-  if(pass != ""){
-    alert("Welcome again " + pass);
-  }
-  pass = prompt("Please enter a name:","");
+  pass = prompt("Please enter the password:","");
   if (pass != "" && pass != null) {
     setCookie("pass", pass, 365);
   }
+  document.location.pathname = "/master";
 }
+checkCookie();
 </script>
 </head>
-<body onload="checkCookie()"></body>
+<body><p>Loading...</p></body>
 </html>
