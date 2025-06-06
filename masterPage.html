@@ -485,7 +485,7 @@ var initWidth = parseInt(document.getElementsByClassName("left")[0].clientWidth)
 var address;
 
 function getCard(){
-  xhr = new XMLHttpRequest();
+  var xhr = new XMLHttpRequest();
   xhr.open("GET", "http://info.local/address", true);
   xhr.onreadystatechange = function() {
     if(xhr.readyState == 4 && xhr.status == 200){
@@ -702,7 +702,7 @@ async function getData() {
 
 var height = parseInt(document.body.offsetWidth)-initWidth-50;
 new QRCode(document.getElementById("qrcode"), {
-  text: window.location.href+"?code="+generateCode(),
+  text: window.location.origin+"/?code=",
   width: height,
   height: height
 });
