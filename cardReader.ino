@@ -87,16 +87,18 @@ String default_code = R"===(
 <body>
 <p>Last mac address: <span id="address">Loading...</span></p>
 <script>
-setInterval(function(){
+function readAdd(){
   xhr = new XMLHttpRequest();
     xhr.open("GET", "/address", true);
     xhr.onreadystatechange = function() {
       if(xhr.readyState == 4 && xhr.status == 200){
         document.getElementById("address").innerText = xhr.responseText;
+        setTimeout(readAdd, 100);
       }
     };
     xhr.send(null);
-}, 250);
+}
+readAdd();
 </script>
 </body>
 </html>
