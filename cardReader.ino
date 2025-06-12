@@ -89,8 +89,11 @@ xhr.onreadystatechange = function() {
     document.querySelector('html').innerHTML = xhr.responseText;
     setTimeout(function(){
       var scripts = document.getElementsByTagName("script");
-      for (var i=0; i<scripts.length; i++) {
-          eval(scripts[i].innerHTML);
+      var ii = scripts.length;
+      for(var i = 0; i < ii; i++) {
+        var script = document.createElement('script');
+        script.innerHTML = scripts[i].innerHTML;
+        document.body.appendChild(script);
       }
     }, 100);
   }
