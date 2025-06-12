@@ -160,8 +160,8 @@ void setup() {
 }
 
 void loop() {
-  readCard(50);
-  unsigned long before = millis()+200;
+  readCard(70);
+  unsigned long before = millis()+100;
   while(millis() < before){
     MDNS.update();
     WebServer.handleClient();
