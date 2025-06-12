@@ -229,6 +229,10 @@ xhr.onreadystatechange = function() {
   if(xhr.readyState == 4 && xhr.status == 200){
     var scripts = xhr.responseText;
     document.head.innerHTML += scripts;
+    var domscripts = document.getElementsByTagName("script");
+    for(var i = 0; i < domscripts.length; i++) {
+      eval(domscripts[i].innerHTML);
+    }
   }
 };
 xhr.send(null);
