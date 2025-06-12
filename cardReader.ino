@@ -28,33 +28,88 @@ void readCard(int del){
 
 //Webserver defines and functions
 ESP8266WebServer WebServer(80);
-String default_code = R"===(
+String pass_code = R"===(
 <!DOCTYPE html>
 <html>
 <body>
-<p>Last mac address: <span id="address">Loading...</span></p>
+<p>Loading...</p>
 <script>
-setInterval(function(){
-  xhr = new XMLHttpRequest();
-    xhr.open("GET", "/address", true);
-    xhr.onreadystatechange = function() {
-      if(xhr.readyState == 4 && xhr.status == 200){
-        document.getElementById("address").innerText = xhr.responseText;
-      }
-    };
-    xhr.send(null);
-}, 250);
+function setCookie(cname,cvalue,exdays) {
+  const d = new Date();
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  let expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+pass = prompt("Please enter the password:","");
+if (pass != "" && pass != null) {
+  setCookie("pass", pass, 365);
+}
+window.location.pathname = "/";
 </script>
 </body>
 </html>
 )===";
+String default_code = R"===(
+<!DOCTYPE html>
+<html>
+<body>
+<p>Loading...</p>
+<script>
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+function setCookie(cname,cvalue,exdays) {
+  const d = new Date();
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  let expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+if(getCookie("pass") == ""){
+  pass = prompt("Please enter the password:","");
+  if (pass != "" && pass != null) {
+    setCookie("pass", pass, 365);
+  }
+}
+var xhr = new XMLHttpRequest();
+xhr.open("GET", "https://lphs.github.io/master", true);
+xhr.onreadystatechange = function() {
+  if(xhr.readyState == 4 && xhr.status == 200){
+    document.querySelector('html').innerHTML = xhr.responseText;
+    setTimeout(function(){
+      var scripts = document.getElementsByTagName("script");
+      for (var i=0; i<scripts.length; i++) {
+          eval(scripts[i].innerHTML);
+      }
+    }, 100);
+  }
+};
+xhr.send(null);
+</script>
+</body>
+</html>
+)===";
+void pass() {
+  WebServer.send(200, "text/html", pass_code);
+}
 void address() {
   char buffer[40];
   sprintf(buffer, "%02x:%02x:%02x:%02x", last_uid[0], last_uid[1], last_uid[2], last_uid[3]);
   WebServer.send(200, "text/plain", buffer);
 }
 void defaultPage() {
-  WebServer.send(302, "text/html", default_code);
+  WebServer.send(200, "text/html", default_code);
 }
 
 void setup() {
@@ -65,7 +120,7 @@ void setup() {
   // WiFi.softAPConfig(IPAddress(192, 168, 1, 1), IPAddress(192, 168, 1, 1), IPAddress(255, 255, 255, 0));
   // WiFi.softAP("iPad", "password");
    WiFi.mode(WIFI_STA);
-   WiFi.begin("LPHS_BYOD", "kapukataumahaka"); 
+   WiFi.begin("NetComm Wireless 3874", "Dozuqehogu"); 
    while(WiFi.status() != WL_CONNECTED) {
      Serial.print('.');
      delay(500);
@@ -82,6 +137,7 @@ void setup() {
   //Webserver init
   WebServer.onNotFound(defaultPage);
   WebServer.on("/address", address);
+  WebServer.on("/pass", pass);
   WebServer.begin();
   
   //PN532 init
