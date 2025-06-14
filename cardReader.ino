@@ -123,7 +123,7 @@ void setup() {
   // WiFi.softAPConfig(IPAddress(192, 168, 1, 1), IPAddress(192, 168, 1, 1), IPAddress(255, 255, 255, 0));
   // WiFi.softAP("iPad", "password");
    WiFi.mode(WIFI_STA);
-   WiFi.begin("NetComm Wireless 3874", "Dozuqehogu"); 
+   WiFi.begin("LPHS_BYOD", "kapukataumahaka"); 
    while(WiFi.status() != WL_CONNECTED) {
      Serial.print('.');
      delay(500);
