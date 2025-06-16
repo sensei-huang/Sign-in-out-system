@@ -3,12 +3,12 @@ function doGet(e) {
   const met = e.parameter.met;
   if(met == 0){
     try {
-      const values = Sheets.Spreadsheets.Values.get(spreadsheetId, 'StudentID!A1:B100').values;
+      const values = Sheets.Spreadsheets.Values.get(spreadsheetId, 'StudentID!A1:B1000').values;
       if (!values) {
         // No data found
         return ContentService.createTextOutput("ERROR");
       }
-      return ContentService.createTextOutput(values[0][0]);
+      return ContentService.createTextOutput(values);
     } catch (err) {
       console.log(err.message);
     }
