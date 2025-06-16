@@ -3,7 +3,8 @@
 //Wifi+Webserver+mDNS libraries
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
-#include <ESP8266WebServer.h>
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 
 //PN532 libraries
 #include <Wire.h>
@@ -27,7 +28,7 @@ void readCard(int del){
 }
 
 //Webserver defines and functions
-ESP8266WebServer WebServer(80);
+AsyncWebServer WebServer(80);
 String pass_code = R"===(
 <!DOCTYPE html>
 <html>
@@ -103,17 +104,6 @@ xhr.send(null);
 </body>
 </html>
 )===";
-void pass() {
-  WebServer.send(200, "text/html", pass_code);
-}
-void address() {
-  char buffer[40];
-  sprintf(buffer, "%02x:%02x:%02x:%02x", last_uid[0], last_uid[1], last_uid[2], last_uid[3]);
-  WebServer.send(200, "text/plain", buffer);
-}
-void defaultPage() {
-  WebServer.send(200, "text/html", default_code);
-}
 
 void setup() {
   Serial.begin(115200);
@@ -122,12 +112,12 @@ void setup() {
   // WiFi.mode(WIFI_AP_STA);
   // WiFi.softAPConfig(IPAddress(192, 168, 1, 1), IPAddress(192, 168, 1, 1), IPAddress(255, 255, 255, 0));
   // WiFi.softAP("iPad", "password");
-   WiFi.mode(WIFI_STA);
-   WiFi.begin("LPHS_BYOD", "kapukataumahaka"); 
-   while(WiFi.status() != WL_CONNECTED) {
-     Serial.print('.');
-     delay(500);
-   }
+  WiFi.mode(WIFI_STA);
+  WiFi.begin("LPHS_BYOD", "kapukataumahaka"); 
+  while(WiFi.status() != WL_CONNECTED) {
+    Serial.print('.');
+    delay(500);
+  }
 
   //mDNS init
   if(MDNS.begin("info")){
@@ -138,9 +128,17 @@ void setup() {
   MDNS.addService("http", "tcp", 80);
 
   //Webserver init
-  WebServer.onNotFound(defaultPage);
-  WebServer.on("/address", address);
-  WebServer.on("/pass", pass);
+  WebServer.onNotFound([](AsyncWebServerRequest *request){
+    request->send(200, "text/html", default_code);
+  });
+  WebServer.on("/address", HTTP_GET, [](AsyncWebServerRequest *request){
+    char buffer[40];
+    sprintf(buffer, "%02x:%02x:%02x:%02x", last_uid[0], last_uid[1], last_uid[2], last_uid[3]);
+    request->send(200, "text/plain", buffer);
+  });
+  WebServer.on("/pass", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(200, "text/html", pass_code);
+  });
   WebServer.begin();
   
   //PN532 init
@@ -160,10 +158,6 @@ void setup() {
 }
 
 void loop() {
-  readCard(70);
-  unsigned long before = millis()+100;
-  while(millis() < before){
-    MDNS.update();
-    WebServer.handleClient();
-  }
+  readCard(50);
+  MDNS.update();
 }
