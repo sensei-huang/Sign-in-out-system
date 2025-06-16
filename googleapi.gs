@@ -1,14 +1,22 @@
 function doGet(e) {
   const spreadsheetId = '15ODUqaZt0XR8L83GgnU2j2FXJ6Nciul-Q-PU3takrYw';
-  const met = e.parameter.met;
+  // const met = e.parameter.met;
+  met = 0;
   if(met == 0){
     try {
-      const values = Sheets.Spreadsheets.Values.get(spreadsheetId, 'StudentID!A1:B1000').values;
+      const values = Sheets.Spreadsheets.Values.get(spreadsheetId, 'StudentID!A2:B1000').values;
       if (!values) {
         // No data found
         return ContentService.createTextOutput("ERROR");
       }
-      return ContentService.createTextOutput(values);
+      var outputString = "[";
+      for(var i = 0; i < values.length; i++){
+        if(values[i][1] != undefined){
+          outputString += '"'+values[i][0].toString().replace(/[\[\]\|\\\",]/g, '')+'|||'+values[i][1].toString().replace(/[\[\]\|\\\",]/g, '')+'", ';
+        }
+      }
+      outputString += '""]';
+      return ContentService.createTextOutput(outputString);
     } catch (err) {
       console.log(err.message);
     }
