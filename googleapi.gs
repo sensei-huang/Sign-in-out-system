@@ -3,7 +3,7 @@ function doGet(e) {
   const met = e.parameter.met;
   if(met == 0){
     try {
-      const values = Sheets.Spreadsheets.Values.get(spreadsheetId, 'StudentID!A1:D1000').values;
+      const values = Sheets.Spreadsheets.Values.get(spreadsheetId, 'StudentID!A1:B100').values;
       if (!values) {
         // No data found
         return ContentService.createTextOutput("ERROR");
