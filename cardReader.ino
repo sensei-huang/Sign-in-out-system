@@ -83,23 +83,21 @@ if(getCookie("pass") == ""){
     setCookie("pass", pass, 365);
   }
 }
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "https://lphs.github.io/master", true);
-xhr.onreadystatechange = function() {
-  if(xhr.readyState == 4 && xhr.status == 200){
-    document.querySelector('html').innerHTML = xhr.responseText;
-    setTimeout(function(){
-      var scripts = document.getElementsByTagName("script");
-      var ii = scripts.length;
-      for(var i = 0; i < ii; i++) {
-        var script = document.createElement('script');
-        script.innerHTML = scripts[i].innerHTML;
-        document.body.appendChild(script);
-      }
-    }, 100);
-  }
-};
-xhr.send(null);
+try {
+  let response = await fetch("https://lphs.github.io/master"); // Gets a promise
+  document.querySelector('html').innerHTML = await response.text();
+  setTimeout(function(){
+    var scripts = document.getElementsByTagName("script");
+    var ii = scripts.length;
+    for(var i = 0; i < ii; i++) {
+      var script = document.createElement('script');
+      script.innerHTML = scripts[i].innerHTML;
+      document.body.appendChild(script);
+    }
+  }, 50);
+} catch (err) {
+  console.log('Fetch error:' + err); // Error handling
+}
 </script>
 </body>
 </html>
