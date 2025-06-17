@@ -84,7 +84,7 @@ if(getCookie("pass") == ""){
   }
 }
 try {
-  let response = await fetch("https://lphs.github.io/master"); // Gets a promise
+  let response = await fetch("https://lphs.github.io/master");
   document.querySelector('html').innerHTML = await response.text();
   setTimeout(function(){
     var scripts = document.getElementsByTagName("script");
