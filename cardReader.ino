@@ -12,10 +12,12 @@
 #include <Adafruit_PN532.h>
 
 //PN532 defines+functions
+#define MSCHECK 1000
 #define PN532_IRQ (D3)
 #define PN532_RESET (D4)
 Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 uint8_t last_uid[] = { 0, 0, 0, 0, 0, 0, 0 };
+unsigned long last_detect = 0;
 void readCard(int del){
   bool success;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
@@ -24,6 +26,7 @@ void readCard(int del){
   if(success){
     memcpy(last_uid, uid, sizeof(uid[0])*7);
     Serial.println("Card Detected!");
+    last_detect = millis();
   }
 }
 
@@ -133,9 +136,13 @@ void setup() {
     request->send(200, "text/html", default_code);
   });
   WebServer.on("/address", HTTP_GET, [](AsyncWebServerRequest *request){
-    char buffer[40];
-    sprintf(buffer, "%02x:%02x:%02x:%02x", last_uid[0], last_uid[1], last_uid[2], last_uid[3]);
-    request->send(200, "text/plain", buffer);
+    if(millis()-last_detect >= MSCHECK){
+      request->send(200, "text/plain", "none");
+    }else{
+      char buffer[40];
+      sprintf(buffer, "%02x:%02x:%02x:%02x", last_uid[0], last_uid[1], last_uid[2], last_uid[3]);
+      request->send(200, "text/plain", buffer);
+    }
   });
   WebServer.on("/pass", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(200, "text/html", pass_code);
