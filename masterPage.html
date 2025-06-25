@@ -549,8 +549,8 @@ async function getCard(){
     }
   }
   try{
-    // const response = await fetch("/address");
-    // address = await response.text();
+    const response = await fetch("/address");
+    address = await response.text();
     var card;
     var found = 0;
     for(var i = 0; i < cards.length; i++){
