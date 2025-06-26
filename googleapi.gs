@@ -1,7 +1,6 @@
 function doGet(e) {
   const spreadsheetId = '15ODUqaZt0XR8L83GgnU2j2FXJ6Nciul-Q-PU3takrYw';
-  // const met = e.parameter.met;
-  met = 0;
+  const met = e.parameter.met;
   if(met == 0){
     try {
       const values = Sheets.Spreadsheets.Values.get(spreadsheetId, 'StudentID!A2:B1000').values;
@@ -74,7 +73,7 @@ function clear(){
   try {
     var ss = SpreadsheetApp.openById(spreadsheetId);
     var sheet = ss.getSheetByName('Log');
-    const range = sheet.getRange('A2:D10000');
+    const range = sheet.getRange('A2:E10000');
     range.clear();
     SpreadsheetApp.flush();
     return ContentService.createTextOutput("Success");
