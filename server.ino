@@ -12,7 +12,7 @@
 #define rxPin D6
 #define txPin D7
 SoftwareSerial mySerial =  SoftwareSerial(rxPin, txPin);
-String address;
+String address = "00:00:00:00";
 
 //Webserver defines and functions
 ESP8266WebServer WebServer(80);
