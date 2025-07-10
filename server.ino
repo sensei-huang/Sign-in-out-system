@@ -15,7 +15,7 @@ SoftwareSerial mySerial =  SoftwareSerial(rxPin, txPin);
 String address;
 
 //Webserver defines and functions
-ESP8266WebServer server(80);
+ESP8266WebServer WebServer(80);
 String pass_code = R"===(
 <!DOCTYPE html>
 <html>
