@@ -15,7 +15,7 @@ SoftwareSerial mySerial =  SoftwareSerial(rxPin, txPin);
 
 //PN532 defines+functions
 #define MSCHECK 1000
-#define MSREAD 50
+#define MSREAD 125
 #define PN532_IRQ (D3)
 #define PN532_RESET (D4)
 Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
