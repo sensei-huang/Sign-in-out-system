@@ -134,7 +134,9 @@ void loop() {
   MDNS.update();
   WebServer.handleClient();
   if(mySerial.available() > 0){
-    address = mySerial.readString();
-    address = address.substring(0, address.length()-2);
+    while(mySerial.available() > 0){
+      address = mySerial.readStringUntil('\n');
+      address = address.substring(0, address.length()-1);
+    }
   }
 }
