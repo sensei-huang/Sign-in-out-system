@@ -36,6 +36,10 @@ void readCard(){
 
 void setup() {
   Serial.begin(115200);
+
+  //LED
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
   
   //Software Serial init
   pinMode(rxPin, INPUT);
@@ -56,6 +60,8 @@ void setup() {
   Serial.print('.');
   Serial.println((versiondata >> 8) & 0xFF, DEC);
   Serial.println("Waiting for an ISO14443A Card ...");
+  
+  digitalWrite(LED_BUILTIN, LOW);
 }
 
 unsigned long last_read = millis();
