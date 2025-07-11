@@ -14,7 +14,7 @@
 SoftwareSerial mySerial =  SoftwareSerial(rxPin, txPin);
 
 //PN532 defines+functions
-#define MSCHECK 1000
+#define MSCHECK 500
 #define MSREAD 125
 #define PN532_IRQ (D3)
 #define PN532_RESET (D4)
