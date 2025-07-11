@@ -12,7 +12,7 @@
 #define rxPin D6
 #define txPin D7
 SoftwareSerial mySerial =  SoftwareSerial(rxPin, txPin);
-String address = "00:00:00:00";
+String address = "none";
 
 //Webserver defines and functions
 ESP8266WebServer WebServer(80);
@@ -96,6 +96,10 @@ load();
 void setup() {
   Serial.begin(115200);
 
+  //LED
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
+
   //Software Serial init
   pinMode(rxPin, INPUT);
   pinMode(txPin, OUTPUT);
@@ -103,7 +107,7 @@ void setup() {
 
   //Wifi init
   WiFi.mode(WIFI_STA);
-  WiFi.begin("vodafoneDC98", "UC9T2JLKLP"); 
+  WiFi.begin("LPHS_BYOD", "kapukataumahaka"); 
   while(WiFi.status() != WL_CONNECTED) {
     Serial.print('.');
     delay(500);
@@ -128,11 +132,16 @@ void setup() {
     WebServer.send(200, "text/html", pass_code);
   });
   WebServer.begin();
+
+  digitalWrite(LED_BUILTIN, LOW);
 }
 
 void loop() {
-  MDNS.update();
-  WebServer.handleClient();
+  unsigned long last = millis();
+  while(millis()-last < 50){
+    MDNS.update();
+    WebServer.handleClient();
+  }
   if(mySerial.available() > 0){
     while(mySerial.available() > 0){
       address = mySerial.readStringUntil('\n');
