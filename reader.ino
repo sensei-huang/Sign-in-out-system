@@ -76,5 +76,6 @@ void loop() {
       sprintf(buffer, "%02x:%02x:%02x:%02x", last_uid[0], last_uid[1], last_uid[2], last_uid[3]);
       mySerial.println(buffer);
     }
+    Serial.println("Not frozen");
   }
 }
