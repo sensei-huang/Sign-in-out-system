@@ -1,3 +1,4 @@
+
 // Use 160MHz cpu
 
 //Software Serial library
@@ -107,7 +108,7 @@ void setup() {
 
   //Wifi init
   WiFi.mode(WIFI_STA);
-  WiFi.begin("LPHS_BYOD", "kapukataumahaka"); 
+  WiFi.begin("LPHS_BYOD"); 
   while(WiFi.status() != WL_CONNECTED) {
     Serial.print('.');
     delay(500);
