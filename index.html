@@ -8,10 +8,6 @@ body,html {
   font-family: Georgia, serif;
 }
 
-#qrcode {
-  margin: 10px 0;
-}
-
 .closebtn {
   margin-left: 15px;
   color: white;
@@ -73,7 +69,7 @@ input[type=submit] {
 
 input, select{
   font-family:inherit;
-  transition: all 150ms linear;
+  transition: all 800ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 select{
@@ -82,14 +78,16 @@ select{
   padding: 1px;
   border: 2px solid #555555;
   border-radius: 20px;
+  font-size: 15px;
 }
 
-input[type=text], input[type=email]{
+input[type=text]{
   outline: none;
   margin: 3px 0px 3px 0px;
   padding: 3px;
   border: 2px solid #555555;
   border-radius: 20px;
+  font-size: 15px;
 }
 
 input[type=text]:focus, input[type=email]:focus{
@@ -97,484 +95,239 @@ input[type=text]:focus, input[type=email]:focus{
   border-radius: 10px;
   padding: 5px;
 }
+
+.container {
+  position: relative;
+}
+
+.container span {
+  font-size: 15px;
+  position: absolute;
+  margin: 6px 0px 6px 0px;
+  padding: 3px 0px 3px 3px;
+  right: 5px;
+}
+
+#widthTester {
+  width: auto;
+  display: inline-block;
+  visibility: hidden;
+  position: fixed;
+  overflow:auto;
+  font-size: 15px;
+}
 </style>
-<script src=
-"https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
-	/*
-	 * -*- coding: utf-8 -*-
-	 * version: 1.0.1
-	 * updated: 2021/3/5
-	 * mail: yunos@graviness.com
-	 * home: https://www.graviness.com/
-	 * ref.:
-	 *  http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/mt.html
-	 */
-	
-	
-	/**
-	 * Mersenne Twister class
-	 * 
-	 * Mersenne Twister that is one of a method of generating pseudo-random numbers, is implemented.
-	 * 
-	 * Generates uniform random numbers of unsigned integer type or floating-point type by the Mersenne Twister.
-	 * It uses a single integer to initialize the random number generation,
-	 * but can also use arbitrary bit-width values using an array if needed.
-	 * 
-	 * This class is a JavaScript language port of the following site (C language source).
-	 * http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/CODES/mt19937ar.c
-	 * The external interface is implemented with reference to java.util.Random class of Java(TM) language.
-	 * http://sdc.sun.co.jp/java/docs/j2se/1.4/ja/docs/ja/api/java/util/Random.html
-	 * 
-	 * The performance is about one-half that of the built-in Math.random,
-	 * but the quality of the random numbers is as shown in the site concerned.
-	 * 
-	 * e.g.
-	 * // Create an instance and initialize the random number generator with the current time.
-	 * var mt = new MersenneTwister(new Date().getTime());
-	 * // Uniform random number of 32-bit unsigned integer type.
-	 * var randomNumber = mt.nextInteger();
-	 */
-	function class__MersenneTwister__(){
-	var N = 624, M = 397;
-	var MAG01 = [0x0, 0x9908b0df];
-	
-	/**
-	 * Generate a new random number generator.
-	 * Set the seed according to the argument.
-	 * 
-	 * @param (None)    Generates a new random number generator.
-	 * The current time is used for the seed.
-	 * @see Date#getTime()
-	 * ---
-	 * @param num
-	 * @see #setSeed(num)
-	 * ---
-	 * @param num[]
-	 * @see #setSeed(num[])
-	 * ---
-	 * @param num1, ...
-	 * @see #setSeed(num1, ...)
-	 */
-	MersenneTwister = function()
-	{
-		this.mt = new Array(N);
-		this.mti = N + 1;
-	
-		var a = arguments;
-		switch(a.length) {
-		case 0:
-			this.setSeed(new Date().getTime());
-			break;
-		case 1:
-			this.setSeed(a[0]);
-			break;
-		default:
-			var seeds = new Array();
-			for(var i = 0; i < a.length; ++i)
-				seeds.push(a[i]);
-			this.setSeed(seeds);
-			break;
-		}
-	};
-	
-	/**
-	 * Set the seed for the random number generator.
-	 * 
-	 * @param num    Set the seed for the random number generator using a single number.
-	 * ---
-	 * @param num[]  Set the seed for the random number generator using multiple numbers.
-	 * ---
-	 * @param num1, ... Set the seed for the random number generator using multiple numbers.
-	 */
-	MersenneTwister.prototype.setSeed = function()
-	{
-		var a = arguments;
-		switch(a.length) {
-		case 1:
-			if(a[0].constructor === Number) {
-				this.mt[0]= a[0];
-				for(var i = 1; i < N; ++i) {
-					var s = this.mt[i - 1] ^ (this.mt[i - 1] >>> 30);
-					this.mt[i] = ((1812433253 * ((s & 0xffff0000) >>> 16))
-							<< 16)
-						+ 1812433253 * (s & 0x0000ffff)
-						+ i;
-				}
-				this.mti = N;
-				return;
-			}
-	
-			this.setSeed(19650218);
-	
-			var l = a[0].length;
-			var i = 1;
-			var j = 0;
-	
-			for(var k = N > l ? N : l; k != 0; --k) {
-				var s = this.mt[i - 1] ^ (this.mt[i - 1] >>> 30)
-				this.mt[i] = (this.mt[i]
-						^ (((1664525 * ((s & 0xffff0000) >>> 16)) << 16)
-							+ 1664525 * (s & 0x0000ffff)))
-					+ a[0][j]
-					+ j;
-				if(++i >= N) {
-					this.mt[0] = this.mt[N - 1];
-					i = 1;
-				}
-				if(++j >= l)
-					j = 0;
-			}
-	
-			for(var k = N - 1; k != 0; --k) {
-				var s = this.mt[i - 1] ^ (this.mt[i - 1] >>> 30);
-				this.mt[i] = (this.mt[i]
-						^ (((1566083941 * ((s & 0xffff0000) >>> 16)) << 16)
-							+ 1566083941 * (s & 0x0000ffff)))
-					- i;
-				if(++i >= N) {
-					this.mt[0] = this.mt[N-1];
-					i = 1;
-				}
-			}
-	
-			this.mt[0] = 0x80000000;
-			return;
-		default:
-			var seeds = new Array();
-			for(var i = 0; i < a.length; ++i)
-				seeds.push(a[i]);
-			this.setSeed(seeds);
-			return;
-		}
-	};
-	
-	/**
-	 * Generates a pseudo-random numbers.
-	 * @param bits  The number of significant bits in the output value.; 0 &lt; bits &lt;= 32.
-	 * @return A pseudo-random number.
-	 */
-	MersenneTwister.prototype.$next = function(bits)
-	{
-		if(this.mti >= N) {
-			var x = 0;
-			for(var k = 0; k < N - M; ++k) {
-				x = (this.mt[k] & 0x80000000) | (this.mt[k + 1] & 0x7fffffff);
-				this.mt[k] = this.mt[k + M] ^ (x >>> 1) ^ MAG01[x & 0x1];
-			}
-			for(var k = N - M; k < N - 1; ++k) {
-				x = (this.mt[k] & 0x80000000) | (this.mt[k + 1] & 0x7fffffff);
-				this.mt[k] = this.mt[k + (M - N)] ^ (x >>> 1) ^ MAG01[x & 0x1];
-			}
-			x = (this.mt[N - 1] & 0x80000000) | (this.mt[0] & 0x7fffffff);
-			this.mt[N - 1] = this.mt[M - 1] ^ (x >>> 1) ^ MAG01[x & 0x1];
-			this.mti = 0;
-		}
-		var y = this.mt[this.mti++];
-		y ^= y >>> 11;
-		y ^= (y << 7) & 0x9d2c5680;
-		y ^= (y << 15) & 0xefc60000;
-		y ^= y >>> 18;
-		return y >>> (32 - bits);
-	};
-	
-	/**
-	 * Generate a uniformly distributed boolean pseudo-random number.
-	 * @return  true or false
-	 */
-	MersenneTwister.prototype.nextBoolean = function()
-	{
-		return this.$next(1) == 1;
-	};
-	
-	/**
-	 * Generate a uniformly distributed unsigned 32-bit integer pseudo-random number.
-	 * @return  An unsigned 32-bit integer pseudo-random number, between 0 and 4294967295.
-	 */
-	MersenneTwister.prototype.nextInteger = function()
-	{
-		return this.$next(32);
-	};
-	
-	/**
-	 * Generate a uniformly distributed unsigned 46-bit integer pseudo-random number.
-	 * Why 46
-	 *  The JavaScript language specification has restrictions regarding number of the bits on operating a bitwise and integer.
-	 *  In this implementation of the Mersenne Twister, where high speed was important,
-	 *  the operation result was broken at 48 bits or more.
-	 *  Therefore, we decided to use the safe 46 bits.
-	 * @return  An unsigned 46-bit integer pseudo-random number, between 0 and 70368744177663.
-	 */
-	MersenneTwister.prototype.nextLong = function()
-	{
-		// NOTE: The calculation result will be broken if it is more than 48 bits.
-		// (46 - 32) = 14 = [7] + [7], 32 - [7] = [25], 32 - [7] = [25]
-		// 2^(46 - [25]) = 2^21 = [2097152]
-		return this.$next(25) * 2097152 + this.$next(25);
-	};
-	
-	/**
-	 * Generate a 32-bit floating-point pseudo-random number with uniform distribution in the range 0.0 to 1.0.
-	 * @return  [0.0 1.0) of the half-open section.
-	 */
-	MersenneTwister.prototype.nextFloat = function()
-	{
-		return this.$next(32) / 4294967296.0; // 2^32
-	};
-	
-	/**
-	 * Generate a 46-bit floating-point pseudo-random number with uniform distribution in the range 0.0 to 1.0.
-	 * Why 46 --> See #nextLong
-	 * @return  [0.0 1.0) of the half-open section.
-	 */
-	MersenneTwister.prototype.nextDouble = function()
-	{
-		return (this.$next(25) * 2097152 + this.$next(25))
-			/ 70368744177664.0; // 2^46
-	};
-	
-	} class__MersenneTwister__();
-	
-	
-	
-	/**
-	* Generate a floating-point pseudo-random numbers
-	* in the half-open section [0 1.0) using Mersenne Twister.
-	* It is used in the same way as Math.random.
-	* 
-	* e.g.
-	* // Generate a floating-point value that is greater than or equal to 0 and less than 1.
-	* var r = Math.mersenneTwisterRandom();
-	*/
-	Math.mersenneTwisterRandom = function()
-	{
-	Math.__MERSENNE_TWISTER__ = new MersenneTwister();
-	
-	return function() {
-		return Math.__MERSENNE_TWISTER__.nextFloat();
-	}
-	}();
-</script>
 </head>
 <body>
 <h1>Sign-in/sign-out</h1>
+
+<!-- Alert -->
 <div id="contain"></div>
+
+<!-- Form -->
 <form onsubmit="event.preventDefault(); submitcode();">
-  <select name="sign" id="sign" onchange="signChange()" required>
-    <option value="" selected disabled hidden>-- Signin or signout --</option>
+  <!-- Sign in/out -->
+  <select name="sign" id="sign" onchange="signChange(this.value)" >
+    <option value="" disabled hidden>-- Sign in/out --</option>
     <option value="in">Sign in</option>
     <option value="out">Sign out</option>
   </select><br>
+
+  <!-- Email -->
+  <label id="emailContainer" class="container">
+    <input id="email" type="text" name="email" pattern=".+\..+" placeholder="john.doe" oninvalid="this.setCustomValidity('Please enter the start of your school email. E.g. john.doe')" oninput="this.setCustomValidity(''); dynamicWidth('email', 117);">
+    <span>@lphs.school.nz</span>
+  </label><br>
   
-  <input id="email" type="email" name="email" pattern=".+\..+@lphs\.school\.nz" placeholder="School Email" hidden required oninvalid="this.setCustomValidity('Please use your school email. E.g. john.doe@lphs.school.nz')" oninput="this.setCustomValidity('')"><br>
-  
-  <select name="inreason" id="inreason" onchange="reasonChange(1)" required hidden oninvalid="this.setCustomValidity('Please select a reason.')" oninput="this.setCustomValidity('')">
-    <option value="" id="indef" selected disabled hidden>-- Reason --</option>
+  <!-- Reason(Sign in) -->
+  <select name="inreason" id="inreason" onchange="reasonChange(this.value)" oninvalid="this.setCustomValidity('Please select a reason.')" oninput="this.setCustomValidity('')">
+    <option value="" disabled hidden>-- Reason --</option>
     <option value="Late">Late</option>
     <option value="Appointment">Appointment</option>
     <option value="other">Other</option>
   </select>
   
-  
-  <select name="outreason" id="outreason" onchange="reasonChange(2)" required hidden oninvalid="this.setCustomValidity('Please select a reason.')" oninput="this.setCustomValidity('')">
-    <option value="" id="outdef" selected disabled hidden>-- Reason --</option>
+  <!-- Reason(Sign out) -->
+  <select name="outreason" id="outreason" onchange="reasonChange(this.value)" oninvalid="this.setCustomValidity('Please select a reason.')" oninput="this.setCustomValidity('')">
+    <option value="" disabled hidden>-- Reason --</option>
     <option value="Year 13">Year 13</option>
     <option value="Appointment">Appointment</option>
     <option value="other">Other</option>
   </select>
-  <input placeholder="Reason" id="other" hidden type="text" oninvalid="this.setCustomValidity('Please enter a reason.')" oninput="this.setCustomValidity('')">
+
+  <!-- Other reason -->
+  <input placeholder="Reason" id="other" type="text" minlength="3" oninvalid="this.setCustomValidity('Please enter a reason greater than 3 letters.')" oninput="this.setCustomValidity('')">
   <br>
-  <input placeholder="Verification code" id="verify" type="text" pattern=".{4}" maxlength="4" oninvalid="this.setCustomValidity('Please enter verification code. E.g. AB12')" oninput="handleInput(event); this.setCustomValidity('');" required hidden>
+
+  <!-- Verification code -->
+  <input placeholder="Verification code" id="verify" type="text" pattern=".{4}" maxlength="4" oninvalid="this.setCustomValidity('Please enter verification code. E.g. AB12'); this.style.display = 'initial'; document.getElementById('verifybr').style.display = 'initial';" oninput="handleInput(event); this.setCustomValidity('');"  >
+  <br id="verifybr">
   
-  <br>
-  <input type="submit" id="submit" hidden>
+  <!-- Submit -->
+  <input type="submit" id="submit" >
 </form><br>
 
+<div id="widthTester"></div>
 <script>
-function handleInput(e) {
-  var ss = e.target.selectionStart;
-  var se = e.target.selectionEnd;
-  if(/[^A-z0-9]/.test(e.target.value)){
-  	e.target.value = e.target.value.replaceAll(/[^A-z0-9]/g, "");
-  }else{
-  	e.target.value = e.target.value.toUpperCase();
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6l7S2KUZZG_v6Ks1nLkFMGOZRrxmIVK6B2g3rSN0bHsBp82ss2MmiUAgrwqYBC08R/exec";
+let verifyCode = 0;
+
+//CSS handling
+  function hide(id){
+    if(document.getElementById(id)){
+      document.getElementById(id).style.display = "none";
+      document.getElementById(id).required = false;
+    }
   }
-  e.target.selectionStart = ss;
-  e.target.selectionEnd = se;
-}
-
-function getVerifyCodeFromURL(){
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  if(urlParams.has('code')){
-  	document.getElementById("verify").value = urlParams.get('code');
+  function show(id){
+    if(document.getElementById(id)){
+      document.getElementById(id).style.display = "initial";
+      document.getElementById(id).required = true;
+    }
   }
-}
-
-function removeElemDelay(element, delay) {
-  setTimeout(() => {
-    element.style.animation = "fade-out 0.5s ease-in";
-    element.style.opacity = 1;
-    setTimeout(() => {
-      if(element && element.parentNode){
-        element.style.display = "none";
-        element.remove();
-      }
-    }, 500);
-  }, delay);
-}
-
-function signChange(){
-  var inoutstr = document.getElementById("sign").value;
-  var outinstr;
-  if(inoutstr == "in"){
-  	outinstr = "out";
-  }else{
-    outinstr = "in";
-  }
-  document.getElementById(inoutstr+"reason").hidden = false;
-  document.getElementById(inoutstr+"reason").required = true;
-
-  document.getElementById(outinstr+"reason").hidden = true;
-  document.getElementById(outinstr+"reason").required = false;
-  
-  document.getElementById("other").hidden = true;
-  document.getElementById("other").required = false;
-  
-  document.getElementById("email").hidden = false;
-  document.getElementById("verify").hidden = false;
-  document.getElementById("outdef").selected = true;
-  document.getElementById("indef").selected = true;
-  document.getElementById("submit").hidden = false;
-}
-
-function reasonChange(inout){
-  var inoutstr;
-  if(inout == 1){
-    inoutstr = "in";
-  }else{
-    inoutstr = "out";
-  }
-  if(document.getElementById(inoutstr+"reason").value == "other"){
-    document.getElementById("other").hidden = false;
-    document.getElementById("other").required = true;
+  function hideAndResetForm(){
+    //Sign in/out
+    document.getElementById("sign").value = "";
+    //Email
+    hide("emailContainer");
+    document.getElementById("email").value = "";
+    dynamicWidth('email', 117);
+    //Sign in reason
+    hide("inreason");
+    document.getElementById("inreason").value = "";
+    //Sign out reason
+    hide("outreason");
+    document.getElementById("outreason").value = "";
+    //Other reason
+    hide("other");
     document.getElementById("other").value = "";
-  }else{
-    document.getElementById("other").hidden = true;
-    document.getElementById("other").required = false;
+    //Verify code
+    hide("verify");
+    hide("verifybr");
+    //Submit
+    hide("submit");
   }
-}
-
-function createAlert(borderColor, backgroundColor, HTML){
-  var aler = document.createElement("div");
-  aler.className = "alert";
-  aler.style.borderColor = borderColor;
-  aler.style.backgroundColor = backgroundColor;
-  aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElemDelay(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span>'+HTML;
-  return aler;
-}
-
-async function submitcode(){
-  var inout = document.getElementById("sign").value;
-  var email = document.getElementById("email").value;
-  var reason = document.getElementById(inout+"reason").value;
-  if(reason == "other"){
-  	reason = document.getElementById("other").value;
+  function signChange(val){
+    show("emailContainer");
+    document.getElementById(val+"reason").value = "";
+    show(val+"reason");
+    hide((val == "in") ? "outreason" : "inreason");
+    hide("other");
+    if(verifyCode == 0){
+      show("verify");
+      show("verifybr");
+    }
+    show("submit");
   }
-  if(document.getElementById("verify").value == generateCode()){
-    var aler = createAlert("#B0B000", "#D0D000", "<strong>Sending...</strong>");
+  function reasonChange(val){
+    document.getElementById("other").value = "";
+    (val == "other") ? show("other") : hide("other");
+  }
+  
+//Dynamic width for inputs
+  function dynamicWidth(id, width){
+    document.getElementById("widthTester").innerText = document.getElementById(id).value;
+    if(document.getElementById(id).value == ""){
+      document.getElementById("widthTester").innerText = document.getElementById(id).placeholder;
+    }
+    document.getElementById(id).style.width = (document.getElementById("widthTester").clientWidth+width)+"px";
+    document.getElementById("widthTester").innerText = "";
+  }
+
+// Verification code handling
+  function handleInput(e) {
+    var ss = e.target.selectionStart;
+    var se = e.target.selectionEnd;
+    if(/[^A-z0-9]/.test(e.target.value)){
+      e.target.value = e.target.value.replaceAll(/[^A-z0-9]/g, "");
+    }else{
+      e.target.value = e.target.value.toUpperCase();
+    }
+    e.target.selectionStart = ss;
+    e.target.selectionEnd = se;
+  }
+  function getVerifyCodeFromURL(){
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    if(urlParams.has('code')){
+      document.getElementById("verify").value = urlParams.get('code');
+      document.getElementById("verify").style.display = "none";
+      document.getElementById('verifybr').style.display = 'none';
+      verifyCode = 1;
+    }
+  }
+
+//Alert handling
+  function removeElemDelay(element, delay) {
+    setTimeout(() => {
+      element.style.animation = "fade-out 0.5s ease-in";
+      element.style.opacity = 1;
+      setTimeout(() => {
+        if(element && element.parentNode){
+          element.style.display = "none";
+          element.remove();
+        }
+      }, 500);
+    }, delay);
+  }
+  function createAlert(backgroundcolor, bordercolor, html){
+    var aler = document.createElement("div");
+    aler.className = "alert";
+    aler.style.backgroundColor = backgroundcolor;
+    aler.style.borderColor = bordercolor;
+    aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElement(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span>'+html;
     document.getElementById("contain").appendChild(aler);
-    if(await sheetLog(inout, email, reason)){
-      removeElemDelay(aler, 0);
+    return aler;
+  }
+
+//Form handling
+  async function submitcode(){
+    var inout = document.getElementById("sign").value;
+    var email = document.getElementById("email").value+"@lphs.school.nz";
+    var reason = document.getElementById(inout+"reason").value;
+    var verifyCode = document.getElementById("verify").value;
+    if(reason == "other"){
+      reason = document.getElementById("other").value;
+    }
+    var aler = createAlert("#D0D000", "#B0B000", "<strong>Sending...</strong>");
+    const tex = await sheetLog(inout, email, reason, verifyCode);
+    removeElemDelay(aler, 0);
+    if(tex == "Success"){
+      hideAndResetForm();
       aler = createAlert("#00B000", "#009600", '<strong>Successfully signed '+inout+'!</strong> Email: '+email+', Reason: '+reason+'.');
-      document.getElementById("contain").appendChild(aler);
-      removeElemDelay(aler, 4000);
+      removeElemDelay(aler, 3000);
+    }else if(tex == "VERIFY"){
+      document.getElementById("verify").style.display = 'initial';
+      document.getElementById('verifybr').style.display = 'initial';
+      var aler = createAlert("#B00000", "#750000", "<strong>Incorrect verification code!</strong>");
+      removeElemDelay(aler, 3000);
+      verifyCode = 0;
     }else{
-      removeElemDelay(sending, 0);
-      aler = createAlert("#B00000", "#990000", "<strong>Failed to sign in! Please try again.</strong>");
-      document.getElementById("contain").appendChild(aler);
-      removeElemDelay(aler, 4000);
+      aler = createAlert("#B00000", "#750000", "<strong>Failed to sign in! Please try again.</strong>");
+      removeElemDelay(aler, 3000);
     }
-  }else{
-    var aler = createAlert("#B00000", "#990000", "<strong>Incorrect verification code!</strong>");
-    document.getElementById("contain").appendChild(aler);
-    removeElemDelay(aler, 4000);
   }
-}
 
-function convertBase(value, from_base, to_base) {
-  var range = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-  var from_range = range.slice(0, from_base);
-  var to_range = range.slice(0, to_base);
-  var dec_value = value.split('').reverse().reduce(function (carry, digit, index) {
-    if (from_range.indexOf(digit) === -1) throw new Error('Invalid digit `'+digit+'` for base '+from_base+'.');
-    return carry += from_range.indexOf(digit) * (Math.pow(from_base, index));
-  }, 0);
-  var new_value = '';
-  while (dec_value > 0) {
-    new_value = to_range[dec_value % to_base] + new_value;
-    dec_value = (dec_value - (dec_value % to_base)) / to_base;
-  }
-  return new_value || '0';
-}
-
-function generateCode(){
-  var d = new Date();
-  let seed = d.getDate()+d.getMonth()*31+d.getFullYear()*372;
-  var MT = new MersenneTwister(seed);
-  return convertBase(String(MT.nextLong()), 10, 36).slice(-4);
-}
-
-var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6l7S2KUZZG_v6Ks1nLkFMGOZRrxmIVK6B2g3rSN0bHsBp82ss2MmiUAgrwqYBC08R/exec";
-
-async function sheetLog(inout, name, reason){
-  try {
-    const response = await fetch(SCRIPT_URL+"?met=1&inout="+inout+"&name="+name+"&reason="+reason, {mode: 'no-cors'});
-    const tex = await response.text();
-    if(tex == "ERROR"){
-      console.error("Error occured form google sheets api when calling function sheetLog");
-      return false;
+//Api handling
+  async function sheetLog(inout, name, reason, verifyCode){
+    try {
+      const response = await fetch(SCRIPT_URL+"?met=1&inout="+inout+"&name="+name+"&reason="+reason+"&verify="+verifyCode, {
+        redirect: "follow",
+        method: "GET", 
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
+      });
+      const tex = await response.text();
+      return tex;
+    } catch (error) {
+      console.error(error.message);
+      return "ERROR";
     }
-    return true;
-  } catch (error) {
-    console.error(error.message);
-    return false;
   }
-  return true;
-}
 
-async function cardLog(name, data){
-  try {
-    const response = await fetch(SCRIPT_URL+"?met=2&name="+name+"&data="+data, {mode: 'no-cors'});
-    const tex = await response.text();
-    if(tex == "ERROR"){
-      console.error("Error occured form google sheets api when calling function sheetLog");
-      return false;
-    }else{
-      return true;
-    }
-  } catch (error) {
-    console.error(error.message);
-  }
-  return false;
-}
-
-async function getData() {
-  try {
-    const response = await fetch(SCRIPT_URL+"?met=0");
-    const tex = await response.text();
-    if(tex == "ERROR"){
-      console.error("Error occured form google sheets api when calling function getData");
-      return;
-    }
-    document.getElementById("content").innerHTML = tex;
-  } catch (error) {
-    console.error(error.message);
-  }
-}
-
+hideAndResetForm();
 getVerifyCodeFromURL();
 </script>
-  
 </body>
 </html>
