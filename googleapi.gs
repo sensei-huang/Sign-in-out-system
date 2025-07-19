@@ -145,7 +145,7 @@ function generateCode(){
   return convertBase(String((Math.floor(rand()*Number.MAX_SAFE_INTEGER/10))), 10, 36).slice(-4);
 }
 
-//Clear functiom
+//Clear function
 function clear(){
   const spreadsheetId = '15ODUqaZt0XR8L83GgnU2j2FXJ6Nciul-Q-PU3takrYw';
   try {
@@ -154,9 +154,7 @@ function clear(){
     const range = sheet.getRange('A2:E10000');
     range.clear();
     SpreadsheetApp.flush();
-    return ContentService.createTextOutput("Success");
   } catch (err) {
     console.log('Failed with error %s', err.message);
   }
-  return ContentService.createTextOutput("ERROR");
 }
