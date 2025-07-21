@@ -465,13 +465,7 @@ var emailink;
 
   async function getCard(){
     try{
-      const response = await fetch("/address", {
-        redirect: "follow",
-        method: "GET", 
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8",
-        },
-      });
+      const response = await fetch("/address");
       address = await response.text();
       var card;
       var found = 0;
@@ -481,10 +475,10 @@ var emailink;
           if(card[1] == address){
             found = 1;
             document.getElementById("email").value = card[0];
-            dynamicWidth('email', 117);
           }
         }
       }
+      dynamicWidth('email', 117);
       if(found == 0 && address != "none"){
         linkAddress = address;
         showLink();
