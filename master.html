@@ -228,7 +228,7 @@ input[type=text]:focus, input[type=email]:focus{
   
   <!-- School Email -->
   <label id="emailContainer" class="container">
-    <input id="email" type="text" name="email" pattern=".+\..+" placeholder="john.doe" oninvalid="this.setCustomValidity('Please enter the start of your school email. E.g. john.doe')" oninput="this.setCustomValidity(''); dynamicWidth('email', 117);">
+    <input id="email" type="text" name="email" pattern=".+\..+" placeholder="john.doe" oninvalid="this.setCustomValidity('Please enter the start of your school email. E.g. john.doe')" oninput="this.setCustomValidity(''); dynamicWidth('email', 117);" spellcheck="false">
     <span>@lphs.school.nz</span>
   </label><br>
   
