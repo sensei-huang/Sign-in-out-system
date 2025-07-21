@@ -2,22 +2,21 @@
 <html>
 <head>
 <script>
-function setCookie(cname,cvalue,exdays) {
-  const d = new Date();
-  d.setTime(d.getTime() + (exdays*24*60*60*1000));
-  let expires = "expires=" + d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
-function checkCookie() {
-  pass = prompt("Please enter the password:","");
+function goOn() {
+  var pass = document.getElementById("pass").value;
   if (pass != "" && pass != null) {
-    setCookie("pass", pass, 365);
+    const d = new Date();
+    d.setTime(d.getTime() + (365*24*60*60*1000));
+    document.cookie = "pass="+pass+";expires="+d.toUTCString()+";path=/";
   }
   document.location.pathname = "/master";
 }
-checkCookie();
 </script>
 </head>
-<body><p>Loading...</p></body>
+<body>
+  <form onsubmit="event.preventDefault(); goOn();">
+    <input type="password" id="pass" placeholder="Password" oninvalid="this.setCustomValidity('Please enter the password')" oninput="this.setCustomValidity('')" required>
+    <input type="submit" value="Sign in"/>
+  </form>
+</body>
 </html>
