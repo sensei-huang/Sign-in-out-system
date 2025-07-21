@@ -286,6 +286,7 @@ var emailink;
     function clearLink(){
       if(document.getElementById("linkingemail").style.display == "none"){
         document.getElementById("linkingemail").value = "";
+        dynamicWidth('linkingemail', 111);
       }
     }
   //Form element functions
@@ -480,6 +481,7 @@ var emailink;
           if(card[1] == address){
             found = 1;
             document.getElementById("email").value = card[0];
+            dynamicWidth('email', 117);
           }
         }
       }
@@ -498,6 +500,7 @@ var emailink;
               hideLink();
               removeElement(aler, 3000);
               document.getElementById("linkingemail").value = "";
+              dynamicWidth('linkingemail', 111);
             }else{
               removeElement(aler, 0);
               aler = createAlert("#B00000", "#750000", '<strong>Failed to link card! Please try again.</strong>');
