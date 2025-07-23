@@ -160,7 +160,7 @@ input[type=text]:focus, input[type=email]:focus{
   <br>
 
   <!-- Verification code -->
-  <input placeholder="Verification code" id="verify" type="text" pattern=".{4}" maxlength="4" oninvalid="this.setCustomValidity('Please enter verification code. E.g. AB12'); this.style.display = 'initial'; document.getElementById('verifybr').style.display = 'initial';" oninput="handleInput(event); this.setCustomValidity('');"  >
+  <input placeholder="Verification code" id="verify" type="text" pattern=".{4}" maxlength="4" oninvalid="this.setCustomValidity('Please enter verification code. E.g. AB12'); this.style.display = 'initial'; document.getElementById('verifybr').style.display = 'initial';" oninput="handleInput(event); this.setCustomValidity(''); dynamicWidth('verify', 10);">
   <br id="verifybr">
   
   <!-- Submit -->
