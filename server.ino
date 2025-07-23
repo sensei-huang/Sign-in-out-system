@@ -1,4 +1,3 @@
-
 // Use 160MHz cpu
 
 //Software Serial library
@@ -23,17 +22,24 @@ String pass_code = R"===(
 <body>
 <p>Loading...</p>
 <script>
-function setCookie(cname,cvalue,exdays) {
-  const d = new Date();
-  d.setTime(d.getTime() + (exdays*24*60*60*1000));
-  let expires = "expires=" + d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+async function load(){
+  try {
+    let response = await fetch("https://lphs.github.io/pass");
+    document.querySelector('html').innerHTML = await response.text();
+    setTimeout(function(){
+      var scripts = document.getElementsByTagName("script");
+      var ii = scripts.length;
+      for(var i = 0; i < ii; i++) {
+        var script = document.createElement('script');
+        script.innerHTML = scripts[i].innerHTML;
+        document.body.appendChild(script);
+      }
+    }, 50);
+  } catch (err) {
+    console.log('Fetch error:' + err); // Error handling
+  }
 }
-pass = prompt("Please enter the password:","");
-if (pass != "" && pass != null) {
-  setCookie("pass", pass, 365);
-}
-window.location.pathname = "/";
+load();
 </script>
 </body>
 </html>
@@ -59,12 +65,6 @@ function getCookie(cname) {
   }
   return "";
 }
-function setCookie(cname,cvalue,exdays) {
-  const d = new Date();
-  d.setTime(d.getTime() + (exdays*24*60*60*1000));
-  let expires = "expires=" + d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
 async function load(){
   try {
     let response = await fetch("https://lphs.github.io/master");
@@ -83,10 +83,7 @@ async function load(){
   }
 }
 if(getCookie("pass") == ""){
-  pass = prompt("Please enter the password:","");
-  if (pass != "" && pass != null) {
-    setCookie("pass", pass, 365);
-  }
+  window.location.pathname = "/pass";
 }
 load();
 </script>
@@ -108,7 +105,7 @@ void setup() {
 
   //Wifi init
   WiFi.mode(WIFI_STA);
-  WiFi.begin("LPHS_BYOD"); 
+  WiFi.begin("LPHS_BYOD", "kapukataumahaka"); 
   while(WiFi.status() != WL_CONNECTED) {
     Serial.print('.');
     delay(500);
