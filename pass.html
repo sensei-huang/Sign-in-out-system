@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enter password</title>
 <script>
 function goOn() {
   var pass = document.getElementById("pass").value;
@@ -12,6 +14,49 @@ function goOn() {
   document.location.pathname = "/master";
 }
 </script>
+<style>
+/*Body & HTML font*/
+  body,html { 
+    font-family: Georgia, serif;
+  }
+/*Input*/
+  input{
+    font-family:inherit;
+    transition: all 800ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+/*Submit*/
+  input[type=submit]{
+    outline: none;
+    margin: 3px 0px 3px 0px;
+    padding: 1px;
+    border: 2px solid #555555;
+    padding: 3px;
+    border-radius: 10px;
+  }
+  input[type=submit]:hover:not(:focus){
+    background: #DDDDDD;
+    box-shadow: 0px 0px 10px 1.5px #555555;
+    border-radius: 10px;
+    padding: 5px;
+  }
+/*Input password*/
+  input[type=password]{
+    outline: none;
+    margin: 3px 0px 3px 0px;
+    padding: 3px 0px 3px 3px;
+    border: 2px solid #555555;
+    border-radius: 20px;
+    font-size: 15px;
+  }
+  input[type=password]:focus{
+    box-shadow: 0px 0px 10px 1.5px #555555;
+    border-radius: 10px;
+    padding: 5px 0px 5px 5px;
+  }
+  input[type=password]:hover:not(:focus){
+    background: #DDDDDD;
+  }
+</style>
 </head>
 <body>
   <form onsubmit="event.preventDefault(); goOn();">
