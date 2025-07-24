@@ -41,6 +41,9 @@ function doGet(e) {
         var date = new Date(); 
         range.setValues([[inout, Utilities.formatDate(date, "Pacific/Auckland", "d/M/y"), Utilities.formatDate(date, "Pacific/Auckland", "h:mm:ss ")+(date.getHours() >= 12 ? 'PM' : 'AM'), name, reason]]);
         SpreadsheetApp.flush();
+        var sortingRange = sheet.getRange(2, 1, Number(values[0][0]), 5);
+        sortingRange.sort([4, 3, 2]);
+        SpreadsheetApp.flush();
         return ContentService.createTextOutput("Success");
       } catch (err) {
         console.log('Failed with error %s', err.message);
