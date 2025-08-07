@@ -25,7 +25,11 @@ function doGet(e) {
   }else if(met == 1){ // POST Log REQUIRES Verification code
     try {
       const values = Sheets.Spreadsheets.Values.get(spreadsheetId, "Log!F1").values;
+      const emails = Sheets.Spreadsheets.Values.get(spreadsheetId, "Email!A1").values;
       if (!values) {
+        return ContentService.createTextOutput("ERROR");
+      }
+      if (!emails) {
         return ContentService.createTextOutput("ERROR");
       }
       if(e.parameter.verify != generateCode()) {
@@ -44,7 +48,7 @@ function doGet(e) {
         sortingRange.sort([4, 3, 2]);
         SpreadsheetApp.flush();
         MailApp.sendEmail(
-          'samuel.huang@lphs.school.nz',
+          emails[0][0],
           'New Sign '+inout+': '+name+', '+reason,
           'Sign: '+inout+'\nName: '+name+'\nReason: '+reason,
         );
