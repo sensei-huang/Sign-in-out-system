@@ -428,15 +428,20 @@ var linkEmail;
       reason = document.getElementById("other").value;
     }
     var aler = createAlert("#D0D000", "#B0B000", "<strong>Sending...</strong>");
-    if(await sheetLog(inout, email, reason)){
-      removeElement(aler, 0);
-      aler = createAlert("#00B000", "#009600", '<strong>Successfully signed '+inout+'!</strong> Email: '+email+', Reason: '+reason+'.</strong>');
-      removeElement(aler, 3000);
+    const tex = await sheetLog(inout, email, reason);
+    removeElemDelay(aler, 0);
+    if(tex == "Success"){
       hideAndResetForm();
+      aler = createAlert("#00B000", "#009600", '<strong>Successfully signed '+inout+'!</strong> Email: '+email+', Reason: '+reason+'.</strong>');
+      removeElemDelay(aler, 3000);
+    }else if(tex == "VERIFY"){
+      document.getElementById("verify").style.display = 'initial';
+      document.getElementById('verifybr').style.display = 'initial';
+      var aler = createAlert("#B00000", "#750000", "<strong>Incorrect verification code!</strong>");
+      removeElemDelay(aler, 3000);
     }else{
-      removeElement(aler, 0);
       aler = createAlert("#B00000", "#750000", "<strong>Failed to sign in! Please try again.</strong>");
-      removeElement(aler, 3000);
+      removeElemDelay(aler, 3000);
     }
   }
 
@@ -475,17 +480,14 @@ var linkEmail;
       });
       const tex = await response.text();
       if(tex == "ERROR"){ // Error in back end
-        console.error("Error occured form google sheets api when calling function sheetLog");
-        return false;
+        console.log("Error occured form google sheets api when calling function sheetLog");
       }else if(tex == "VERIFY"){ // Incorrect verification code
-        console.error("Incorrect verification code");
-        return false;
-      }else{ // Successfully sent
-        return true;
+        console.log("Incorrect verification code");
       }
+      return tex;
     }catch(error){ // Other errors
       console.error(error.message);
-      return false;
+      return "ERROR";
     }
   }
   async function logCard(name, data){ // Log a new card linked to a email using fetch
@@ -499,17 +501,14 @@ var linkEmail;
       });
       const tex = await response.text();
       if(tex == "ERROR"){ // Error in back end
-        console.error("Error occured form google sheets api when calling function sheetLog");
-        return false;
-      }else if(tex == "VERIFY"){ // Incorrect password
-        console.error("Incorrect password");
-        return false;
-      }else{ // Successfully sent
-        return true;
+        console.log("Error occured form google sheets api when calling function logCard");
+      }else if(tex == "VERIFY"){ // Incorrect verification code
+        console.log("Incorrect verification code");
       }
+      return tex;
     }catch(error){ // Other errors
       console.error(error.message);
-      return false;
+      return "ERROR";
     }
   }
   async function getCardList(){ // Get the list of cards and their ID's and email's using fetch
@@ -523,18 +522,16 @@ var linkEmail;
       });
       const tex = await response.text();
       if(tex == "ERROR"){ // Error in back end
-        console.error("Error occured form google sheets api when calling function sheetLog");
-        return false;
-      }else if(tex == "VERIFY"){ // Incorrect password
-        console.error("Incorrect password");
-        return false;
+        console.log("Error occured form google sheets api when calling function getCardList");
+      }else if(tex == "VERIFY"){ // Incorrect verification code
+        console.log("Incorrect password");
       }else{ // Successfully sent
         cards = JSON.parse(tex);
-        return true;
       }
+      return tex;
     }catch(error){ // Other errors
       console.error(error.message);
-      return false;
+      return "ERROR";
     }
   }
 // CardReader function
@@ -568,13 +565,24 @@ var linkEmail;
             linkEmail = document.getElementById("linkingemail").value;
             hideLink();
             var aler = createAlert("#D0D000", "#B0B000", "<strong>Linking...</strong>");
-            if(await logCard(linkEmail, linkAddress)){
-              removeElement(aler, 0);
+            const tex = await logCard(linkEmail, linkAddress);
+            removeElemDelay(aler, 0);
+            if(tex == "Success"){
               aler = createAlert("#00B000", "#009600", '<strong>Successfully linked card to '+linkEmail+'.</strong>');
               cards.push(linkEmail+"|||"+linkAddress);
               getCardList();
-              removeElement(aler, 3000);
+              removeElemDelay(aler, 3000);
+            }else if(tex == "VERIFY"){
+              document.getElementById("verify").style.display = 'initial';
+              document.getElementById('verifybr').style.display = 'initial';
+              var aler = createAlert("#B00000", "#750000", "<strong>Incorrect password!</strong>");
+              removeElemDelay(aler, 3000);
+              verifyCode = 0;
             }else{
+              aler = createAlert("#B00000", "#750000", "<strong>Failed to link card! Please try again.</strong>");
+              removeElemDelay(aler, 3000);
+            }
+            
               removeElement(aler, 0);
               aler = createAlert("#B00000", "#750000", '<strong>Failed to link card! Please try again.</strong>');
               removeElement(aler, 3000);
