@@ -4,118 +4,118 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sign-in</title>
 <style>
-body,html { 
-  font-family: Georgia, serif;
-}
+/*Body & HTML font*/
+  body,html{ 
+    font-family: Georgia, serif;
+  }
 
-.closebtn {
-  margin-left: 15px;
-  color: white;
-  font-weight: bold;
-  float: right;
-  font-size: 22px;
-  line-height: 20px;
-  cursor: pointer;
-  transition: 0.3s;
-}
+/*Alert*/
+  /*Close button*/
+    .closebtn{
+      margin-left: 15px;
+      color: white;
+      font-weight: bold;
+      float: right;
+      font-size: 22px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+  /*Alert*/
+    .alert{
+      padding: 10px;
+      border-style: solid;
+      border-width: 3px;
+      border-radius: 15px;
+      color: white;
+      opacity: 1;
+      animation: fade-in 0.5s ease-in;
+      overflow-wrap: break-word;
+    }
+  /*Keyframes*/
+    @keyframes fade-in{
+      0%{ opacity: 0; }
+      100%{ opacity: 1; }
+    }
+    @keyframes fade-out{
+      0%{ opacity: 1; font-size: 100%; height: 100%; }
+      100%{ opacity: 0; padding: 0px; font-size: 0%; height: 0%; display: "none"; }
+    }
 
-.alert {
-  padding: 10px;
-  background-color: #00B000;
-  border-color: #009600;
-  border-style: solid;
-  border-width: 3px;
-  border-radius: 15px;
-  color: white;
-  opacity: 1;
-  animation: fade-in 0.5s ease-in;
-}
+/*Form elements*/
+  /*Button & Submit*/
+    input[type=submit]:hover:not(:focus), input[type=button]:hover:not(:focus){
+      background: #DDDDDD;
+      box-shadow: 0px 0px 10px 1.5px #555555;
+      border-radius: 10px;
+      padding: 5px;
+    }
+    input[type=submit], input[type=button]{
+      outline: none;
+      margin: 3px 0px 3px 0px;
+      padding: 1px;
+      border: 2px solid #555555;
+      padding: 3px;
+      border-radius: 10px;
+    }
+  /*Input & Select*/
+    input, select{
+      font-family:inherit;
+      transition: all 800ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    input[type=text]:hover:not(:focus), select:hover:not(:focus){
+      background: #DDDDDD;
+    }
+  /*Select*/
+    select{
+      outline: none;
+      margin: 3px 0px 3px 0px;
+      padding: 1px;
+      border: 2px solid #555555;
+      border-radius: 20px;
+      font-size: 15px;
+    }
+    select:focus{
+      box-shadow: 0px 0px 10px 1.5px #555555;
+      border-radius: 10px;
+      padding: 3px;
+    }
+  /*Input text*/
+    input[type=text]{
+      outline: none;
+      margin: 3px 0px 3px 0px;
+      padding: 3px;
+      border: 2px solid #555555;
+      border-radius: 20px;
+      font-size: 15px;
+    }
+    input[type=text]:focus{
+      box-shadow: 0px 0px 10px 1.5px #555555;
+      border-radius: 10px;
+      padding: 5px;
+    }
 
-@keyframes fade-in {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@keyframes fade-out {
-  0% { opacity: 1; font-size: 100%; height: 100%; }
-  100% { opacity: 0; padding: 0px; font-size: 0%; height: 0%; display: "none"; }
-}
-
-input[type=text]:hover:not(:focus), input[type=email]:hover:not(:focus), select:hover:not(:focus) {
-  background: #DDDDDD;
-}
-
-select:focus {
-  box-shadow: 0px 0px 10px 1.5px #555555;
-  border-radius: 10px;
-  padding: 3px;
-}
-
-input[type=submit]:hover:not(:focus) {
-  background: #DDDDDD;
-  box-shadow: 0px 0px 10px 1.5px #555555;
-  border-radius: 10px;
-  padding: 5px;
-}
-
-input[type=submit] {
-  outline: none;
-  margin: 3px 0px 3px 0px;
-  padding: 1px;
-  border: 2px solid #555555;
-  padding: 3px;
-  border-radius: 10px;
-}
-
-input, select{
-  font-family:inherit;
-  transition: all 800ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-select{
-  outline: none;
-  margin: 3px 0px 3px 0px;
-  padding: 1px;
-  border: 2px solid #555555;
-  border-radius: 20px;
-  font-size: 15px;
-}
-
-input[type=text]{
-  outline: none;
-  margin: 3px 0px 3px 0px;
-  padding: 3px;
-  border: 2px solid #555555;
-  border-radius: 20px;
-  font-size: 15px;
-}
-
-input[type=text]:focus, input[type=email]:focus{
-  box-shadow: 0px 0px 10px 1.5px #555555;
-  border-radius: 10px;
-  padding: 5px;
-}
-
-.container {
-  position: relative;
-}
-
-.container span {
-  font-size: 15px;
-  position: absolute;
-  margin: 6px 0px 6px 0px;
-  padding: 3px 0px 3px 3px;
-  right: 5px;
-}
-
-#widthTester {
-  width: auto;
-  display: inline-block;
-  visibility: hidden;
-  position: fixed;
-  overflow:auto;
-  font-size: 15px;
-}
+/*Dynamic width*/
+  /*Width tester*/
+    #widthTester{
+      width: auto;
+      display: inline-block;
+      visibility: hidden;
+      position: fixed;
+      overflow:auto;
+      font-size: 15px;
+    }
+  /*Container*/
+    .container{
+      position: relative;
+    }
+    .container span{
+      font-size: 15px;
+      position: absolute;
+      margin: 6px 0px 6px 0px;
+      padding: 3px 0px 3px 3px;
+      right: 10px;
+    }
 </style>
 </head>
 <body>
@@ -142,17 +142,14 @@ input[type=text]:focus, input[type=email]:focus{
   <!-- Reason(Sign in) -->
   <select name="inreason" id="inreason" onchange="reasonChange(this.value)" oninvalid="this.setCustomValidity('Please select a reason.')" oninput="this.setCustomValidity('')">
     <option value="" disabled hidden>-- Reason --</option>
-    <option value="Late">Late</option>
-    <option value="Appointment">Appointment</option>
-    <option value="other">Other</option>
+    <option value="Sick bay">Sick bay</option>
   </select>
   
   <!-- Reason(Sign out) -->
   <select name="outreason" id="outreason" onchange="reasonChange(this.value)" oninvalid="this.setCustomValidity('Please select a reason.')" oninput="this.setCustomValidity('')">
     <option value="" disabled hidden>-- Reason --</option>
-    <option value="Year 13">Year 13</option>
-    <option value="Appointment">Appointment</option>
-    <option value="other">Other</option>
+    <option value="Sick bay">Sick bay</option>
+    <option value="Home and back to class">Home and back to class</option>
   </select>
 
   <!-- Other reason -->
@@ -167,75 +164,76 @@ input[type=text]:focus, input[type=email]:focus{
   <input type="submit" id="submit" >
 </form><br>
 
+<!-- Width tester for dynamic input width -->
 <div id="widthTester"></div>
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6l7S2KUZZG_v6Ks1nLkFMGOZRrxmIVK6B2g3rSN0bHsBp82ss2MmiUAgrwqYBC08R/exec";
 let verifyCode = 0;
 
-//CSS handling
-  function hide(id){
-    if(document.getElementById(id)){
-      document.getElementById(id).style.display = "none";
-      document.getElementById(id).required = false;
+// CSS handling
+  // Form element functions
+    function hide(id){ // Hide the form element
+      if(document.getElementById(id)){
+        document.getElementById(id).style.display = "none";
+        document.getElementById(id).required = false;
+      }
     }
-  }
-  function show(id){
-    if(document.getElementById(id)){
-      document.getElementById(id).style.display = "initial";
-      document.getElementById(id).required = true;
+    function show(id){ // Show the form element
+      if(document.getElementById(id)){
+        document.getElementById(id).style.display = "initial";
+        document.getElementById(id).required = true;
+      }
     }
-  }
-  function hideAndResetForm(){
-    //Sign in/out
-    document.getElementById("sign").value = "";
-    //Email
-    hide("emailContainer");
-    document.getElementById("email").value = "";
-    dynamicWidth('email', 117);
-    //Sign in reason
-    hide("inreason");
-    document.getElementById("inreason").value = "";
-    //Sign out reason
-    hide("outreason");
-    document.getElementById("outreason").value = "";
-    //Other reason
-    hide("other");
-    document.getElementById("other").value = "";
-    //Verify code
-    hide("verify");
-    hide("verifybr");
-    //Submit
-    hide("submit");
-  }
-  function signChange(val){
-    show("emailContainer");
-    document.getElementById(val+"reason").value = "";
-    show(val+"reason");
-    hide((val == "in") ? "outreason" : "inreason");
-    hide("other");
-    if(verifyCode == 0){
-      show("verify");
-      show("verifybr");
+    function hideAndResetForm(){ // Hide and reset all form elements
+      // Sign in/out
+      document.getElementById("sign").value = "";
+      // Email
+      hide("emailContainer");
+      document.getElementById("email").value = "";
+      dynamicWidth('email', 117);
+      // Sign in reason
+      hide("inreason");
+      document.getElementById("inreason").value = "";
+      // Sign out reason
+      hide("outreason");
+      document.getElementById("outreason").value = "";
+      // Other reason
+      hide("other");
+      document.getElementById("other").value = "";
+      // Verify code
+      hide("verify");
+      hide("verifybr");
+      // Submit
+      hide("submit");
     }
-    show("submit");
-  }
-  function reasonChange(val){
-    document.getElementById("other").value = "";
-    (val == "other") ? show("other") : hide("other");
-  }
-  
-//Dynamic width for inputs
-  function dynamicWidth(id, width){
-    document.getElementById("widthTester").innerText = document.getElementById(id).value;
-    if(document.getElementById(id).value == ""){
-      document.getElementById("widthTester").innerText = document.getElementById(id).placeholder;
+    function signChange(val){ // Activated every time the user changes whether they are signing in or signing out
+      show("emailContainer");
+      document.getElementById(val+"reason").value = "";
+      show(val+"reason");
+      hide((val == "in") ? "outreason" : "inreason");
+      hide("other");
+      if(verifyCode == 0){
+        show("verify");
+        show("verifybr");
+      }
+      show("submit");
     }
-    document.getElementById(id).style.width = (document.getElementById("widthTester").clientWidth+width)+"px";
-    document.getElementById("widthTester").innerText = "";
-  }
+    function reasonChange(val){ // Shows the other text box if other is selected
+      document.getElementById("other").value = "";
+      (val == "other") ? show("other") : hide("other");
+    }
+  // Dynamic width for inputs
+    function dynamicWidth(id, width){
+      document.getElementById("widthTester").innerText = document.getElementById(id).value;
+      if(document.getElementById(id).value == ""){
+        document.getElementById("widthTester").innerText = document.getElementById(id).placeholder;
+      }
+      document.getElementById(id).style.width = (document.getElementById("widthTester").clientWidth+width)+"px";
+      document.getElementById("widthTester").innerText = "";
+    }
 
 // Verification code handling
-  function handleInput(e) {
+  function handleInput(e){ // Auto-capitalize verification code and only allow A-Z and 0-9 to be entered
     var ss = e.target.selectionStart;
     var se = e.target.selectionEnd;
     if(/[^A-z0-9]/.test(e.target.value)){
@@ -246,7 +244,7 @@ let verifyCode = 0;
     e.target.selectionStart = ss;
     e.target.selectionEnd = se;
   }
-  function getVerifyCodeFromURL(){
+  function getVerifyCodeFromURL(){ // If URL contains verification code(e.g. scanned from QR code), fill in and hide the verification code
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     if(urlParams.has('code')){
@@ -257,8 +255,8 @@ let verifyCode = 0;
     }
   }
 
-//Alert handling
-  function removeElemDelay(element, delay) {
+// Alert handling
+  function removeElemDelay(element, delay){ // 
     setTimeout(() => {
       element.style.animation = "fade-out 0.5s ease-in";
       element.style.opacity = 1;
@@ -280,17 +278,17 @@ let verifyCode = 0;
     return aler;
   }
 
-//Form handling
+// Form handling
   async function submitcode(){
     var inout = document.getElementById("sign").value;
     var email = document.getElementById("email").value+"@lphs.school.nz";
     var reason = document.getElementById(inout+"reason").value;
-    var verifyCode = document.getElementById("verify").value;
+    var verify = document.getElementById("verify").value;
     if(reason == "other"){
       reason = document.getElementById("other").value;
     }
     var aler = createAlert("#D0D000", "#B0B000", "<strong>Sending...</strong>");
-    const tex = await sheetLog(inout, email, reason, verifyCode);
+    const tex = await sheetLog(inout, email, reason, verify);
     removeElemDelay(aler, 0);
     if(tex == "Success"){
       hideAndResetForm();
@@ -308,10 +306,10 @@ let verifyCode = 0;
     }
   }
 
-//Api handling
-  async function sheetLog(inout, name, reason, verifyCode){
-    try {
-      const response = await fetch(SCRIPT_URL+"?met=1&inout="+inout+"&name="+name+"&reason="+reason+"&verify="+verifyCode, {
+// Api handling
+  async function sheetLog(inout, name, reason, verify){ // Sends sign in/out data using fetch
+    try{
+      const response = await fetch(SCRIPT_URL+"?met=1&inout="+inout+"&name="+name+"&reason="+reason+"&verify="+verify, {
         redirect: "follow",
         method: "GET", 
         headers: {
@@ -319,8 +317,13 @@ let verifyCode = 0;
         },
       });
       const tex = await response.text();
+      if(tex == "ERROR"){ // Error in back end
+        console.log("Error occured form google sheets api when calling function sheetLog");
+      }else if(tex == "VERIFY"){ // Incorrect verification code
+        console.log("Incorrect verification code");
+      }
       return tex;
-    } catch (error) {
+    }catch(error){ // Other errors
       console.error(error.message);
       return "ERROR";
     }
