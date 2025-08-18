@@ -261,9 +261,63 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       text-decoration: none;
       cursor: pointer;
     }
+
+/*Wake mode*/
+  /*Switch button underlay*/
+    .switch{
+      position: relative;
+      display: inline-block;
+      width: 2rem;
+      height: 1.25rem;
+    }
+    .switch input{ 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+  /*Slider circle*/
+    .slider{
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+      border-radius: 1rem;
+    }
+    .slider:before{
+      position: absolute;
+      content: "";
+      height: 0.8rem;
+      width: 0.8rem;
+      left: 0.2rem;
+      bottom: 0.2rem;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+      border-radius: 50%;
+    }
+  /*Slider button*/
+    input:checked + .slider{
+      background-color: #2196F3;
+    }
+    input:checked + .slider:before{
+      -webkit-transform: translateX(0.8rem);
+      -ms-transform: translateX(0.8rem);
+      transform: translateX(0.8rem);
+    }
+  /*Footer positioning*/
+    #footer{
+        position: absolute;
+        bottom: 10px;
+    }
 </style>
 </head>
 <body>
+
 <!-- QR code container(Right-aligned) -->
 <div class="right">
   <div id="rightcon">
@@ -273,10 +327,13 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     <div id="verifycode" style="font-size: 50px; padding: 5px 0"></div>
   </div>
 </div>
+
 <!-- Form container(Left-aligned) -->
 <div class="left">
+
 <!-- Title -->
 <h1>Sign-in/sign-out</h1>
+
 <!-- Alert container -->
 <div id="contain" style="width: 95%;"></div>
 
@@ -334,8 +391,19 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
   <input type="submit" id="submit">
 </form><br>
 </div>
+
 <!-- Width tester for dynamic input width -->
 <div id="widthTester"></div>
+
+<!-- Footer -->
+<div id="footer">
+  <!-- Wake mode slider -->
+  <label class="switch">
+    <input type="checkbox" onclick='changeWake(this);' id="wakebox">
+    <span class="slider"></span>
+  </label>
+  <span>Wake mode(Keeps screen awake)</span>
+</div>
 <script>
 
 // Initwidth will be the bigger of: Bodywidth-Bodyheight+100 or FormWidth+30
@@ -346,6 +414,8 @@ var address = "none";
 var cards = null;
 var linkAddress;
 var linkEmail;
+// Variable to store wakelock promise
+let wakeLock = null;
 
 // CSS handling
   // Link element functions
@@ -446,7 +516,7 @@ var linkEmail;
   }
 
 // Alert handling
-  function removeElement(element, delay){ // Used to remove alerts while still allowing a fade out animation
+  function removeElemDelay(element, delay){ // Used to remove alerts while still allowing a fade out animation
     setTimeout(() => {
       element.style.animation = "fade-out 0.5s ease-in";
       element.style.opacity = 1;
@@ -463,9 +533,35 @@ var linkEmail;
     aler.className = "alert";
     aler.style.backgroundColor = backgroundcolor;
     aler.style.borderColor = bordercolor;
-    aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElement(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span>'+html;
+    aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElemDelay(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span>'+html;
     document.getElementById("contain").appendChild(aler);
     return aler;
+  }
+
+// WakeLock Handling
+  async function changeWake(cb){ // Changes wakelock state
+    cb.checked ? await lockScreen() : await unlockScreen();
+  }
+  async function lockScreen(){ // Turns wakelock on
+    try{
+      wakeLock = await navigator.wakeLock.request("screen");
+      wakeLock.onrelease = function(){ // Wake lock turns off when page is inactive so update checkbox to show
+        wakeLock = null;
+        document.getElementById('wakebox').checked = false;
+      };
+    }catch(e){
+      console.error(`Failed to enable screen lock: ${e.name}, ${e.message}`);
+    }
+  }
+  async function unlockScreen(){ // Turns wakelock off
+    try {
+      if(wakeLock !== null) { // Check whether or not there is wakelock
+        await wakeLock.release();
+        wakeLock = null;
+      }
+    }catch(e){
+      console.error(`Failed to disable screen lock: ${e.name}, ${e.message}`);
+    }
   }
 
 // Api handling
@@ -582,11 +678,9 @@ var linkEmail;
               aler = createAlert("#B00000", "#750000", "<strong>Failed to link card! Please try again.</strong>");
               removeElemDelay(aler, 3000);
             }
-            
-              removeElement(aler, 0);
-              aler = createAlert("#B00000", "#750000", '<strong>Failed to link card! Please try again.</strong>');
-              removeElement(aler, 3000);
-            }
+            removeElemDelay(aler, 0);
+            aler = createAlert("#B00000", "#750000", '<strong>Failed to link card! Please try again.</strong>');
+            removeElemDelay(aler, 3000);
           }else{
             document.getElementById("linkingemail").setCustomValidity('Please use your school email. E.g. john.doe@lphs.school.nz');
           }
