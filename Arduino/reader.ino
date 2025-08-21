@@ -21,7 +21,7 @@ SoftwareSerial mySerial =  SoftwareSerial(rxPin, txPin);
 Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 uint8_t last_uid[] = { 0, 0, 0, 0, 0, 0, 0 };
 unsigned long last_detect = millis();
-void readCard(){
+void readCard(){ // Read card information
   bool success;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
   uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
@@ -68,14 +68,13 @@ unsigned long last_read = millis();
 
 void loop() {
   readCard();
-  if(millis()-last_read >= MSREAD){
-    if(millis()-last_detect >= MSCHECK){
+  if(millis()-last_read >= MSREAD){ // Send card info to server
+    if(millis()-last_detect >= MSCHECK){ // No card present in last MSCHECK ms
       mySerial.println("none");
-    }else{
+    }else{ // Found card
       char buffer[40];
       sprintf(buffer, "%02x:%02x:%02x:%02x", last_uid[0], last_uid[1], last_uid[2], last_uid[3]);
       mySerial.println(buffer);
     }
-    Serial.println("Not frozen");
   }
 }
