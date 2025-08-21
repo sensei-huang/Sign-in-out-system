@@ -496,25 +496,27 @@ var noSleep = new NoSleep();
 
 // Form handling
   async function submitcode(){ // Manages alerts and sends data to google sheets
+    // Get values of form
     var inout = document.getElementById("sign").value;
     var email = document.getElementById("email").value+"@lphs.school.nz";
     var reason = document.getElementById(inout+"reason").value;
     if(reason == "other"){
       reason = document.getElementById("other").value;
     }
+    // Send data to backend
     var aler = createAlert("#D0D000", "#B0B000", "<strong>Sending...</strong>");
     const tex = await sheetLog(inout, email, reason);
     removeElemDelay(aler, 0);
-    if(tex == "Success"){
+    if(tex == "Success"){ // Successfully logged data
       hideAndResetForm();
       aler = createAlert("#00B000", "#009600", '<strong>Successfully signed '+inout+'!</strong> Email: '+email+', Reason: '+reason+'.</strong>');
       removeElemDelay(aler, 3000);
-    }else if(tex == "VERIFY"){
+    }else if(tex == "VERIFY"){ // Did not provide correct verification code
       document.getElementById("verify").style.display = 'initial';
       document.getElementById('verifybr').style.display = 'initial';
       aler = createAlert("#B00000", "#750000", "<strong>Incorrect verification code!</strong>");
       removeElemDelay(aler, 3000);
-    }else{
+    }else{ // Error in back end
       aler = createAlert("#B00000", "#750000", "<strong>Failed to sign in! Please try again.</strong>");
       removeElemDelay(aler, 3000);
     }
@@ -571,7 +573,7 @@ var noSleep = new NoSleep();
       const tex = await response.text();
       if(tex == "ERROR"){ // Error in back end
         console.log("Error occured form google sheets api when calling function sheetLog");
-      }else if(tex == "VERIFY"){ // Incorrect verification code
+      }else if(tex == "VERIFY"){ // Did not provide correct verification code
         console.log("Incorrect verification code");
       }
       return tex;
@@ -592,7 +594,7 @@ var noSleep = new NoSleep();
       const tex = await response.text();
       if(tex == "ERROR"){ // Error in back end
         console.log("Error occured form google sheets api when calling function logCard");
-      }else if(tex == "VERIFY"){ // Incorrect verification code
+      }else if(tex == "VERIFY"){ // Did not provide correct verification code
         console.log("Incorrect verification code");
       }
       return tex;
@@ -613,9 +615,9 @@ var noSleep = new NoSleep();
       const tex = await response.text();
       if(tex == "ERROR"){ // Error in back end
         console.log("Error occured form google sheets api when calling function getCardList");
-      }else if(tex == "VERIFY"){ // Incorrect verification code
+      }else if(tex == "VERIFY"){ // Did not provide correct password
         console.log("Incorrect password");
-      }else{ // Successfully sent
+      }else{ // Successfully recieved
         cards = JSON.parse(tex);
       }
       return tex;
@@ -636,9 +638,9 @@ var noSleep = new NoSleep();
       var card;
       var found = 0;
       for(var i = 0; i < cards.length; i++){ // Parse cards
-        if(cards[i].includes("|||")){
+        if(cards[i].includes("|||")){ // A valid card
           card = cards[i].split("|||");
-          if(card[1] == address){
+          if(card[1] == address){ // Identified card holder's email
             found = 1;
             document.getElementById("email").value = card[0];
             show("emailContainer");
@@ -647,39 +649,37 @@ var noSleep = new NoSleep();
       }
       // Alert handling for linking card
       dynamicWidth('email', 117);
-      if(found == 0 && address != "none" && address != linkAddress){
+      if(found == 0 && address != "none" && address != linkAddress){ // Unknown card found
         linkAddress = address;
-        showLink();
+        showLink(); // Show popup
         document.getElementById("link").onclick = async function(){
-          if(document.getElementById("linkingemail").reportValidity()){
+          if(document.getElementById("linkingemail").reportValidity()){ // Valid email
             linkEmail = document.getElementById("linkingemail").value;
             hideLink();
+            // Send data to backend
             var aler = createAlert("#D0D000", "#B0B000", "<strong>Linking...</strong>");
             const tex = await logCard(linkEmail, linkAddress);
             removeElemDelay(aler, 0);
-            if(tex == "Success"){
+            if(tex == "Success"){ // Successfully linked card
               aler = createAlert("#00B000", "#009600", '<strong>Successfully linked card to '+linkEmail+'.</strong>');
               cards.push(linkEmail+"|||"+linkAddress);
               getCardList();
               removeElemDelay(aler, 3000);
-            }else if(tex == "VERIFY"){
+            }else if(tex == "VERIFY"){ // Did not provide correct password
               document.getElementById("verify").style.display = 'initial';
               document.getElementById('verifybr').style.display = 'initial';
               aler = createAlert("#B00000", "#750000", "<strong>Incorrect password!</strong>");
               removeElemDelay(aler, 3000);
               verifyCode = 0;
-            }else{
+            }else{ // Something else failed(Probably backend)
               aler = createAlert("#B00000", "#750000", "<strong>Failed to link card! Please try again.</strong>");
               removeElemDelay(aler, 3000);
             }
-            removeElemDelay(aler, 0);
-            aler = createAlert("#B00000", "#750000", '<strong>Failed to link card! Please try again.</strong>');
-            removeElemDelay(aler, 3000);
-          }else{
+          }else{ // Invalid email
             document.getElementById("linkingemail").setCustomValidity('Please use your school email. E.g. john.doe@lphs.school.nz');
           }
         };
-      }else if(found == 1){
+      }else if(found == 1){ // Found another card so hide link card popup
         linkAddress = "none";
         hideLink();
       }
