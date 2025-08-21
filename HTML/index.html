@@ -223,7 +223,7 @@ let verifyCode = 0;
       (val == "other") ? show("other") : hide("other");
     }
   // Dynamic width for inputs
-    function dynamicWidth(id, width){
+    function dynamicWidth(id, width){ // Uses widthTester to find text width and changes text box's width based on that
       document.getElementById("widthTester").innerText = document.getElementById(id).value;
       if(document.getElementById(id).value == ""){
         document.getElementById("widthTester").innerText = document.getElementById(id).placeholder;
@@ -233,21 +233,21 @@ let verifyCode = 0;
     }
 
 // Verification code handling
-  function handleInput(e){ // Auto-capitalize verification code and only allow A-Z and 0-9 to be entered
+  function handleInput(e){ // Auto-capitalise verification code and only allow A-Z and 0-9 to be entered
     var ss = e.target.selectionStart;
     var se = e.target.selectionEnd;
-    if(/[^A-z0-9]/.test(e.target.value)){
+    if(/[^A-z0-9]/.test(e.target.value)){ // Invalid input
       e.target.value = e.target.value.replaceAll(/[^A-z0-9]/g, "");
-    }else{
+    }else{ // Auto-capitalise verification code
       e.target.value = e.target.value.toUpperCase();
     }
     e.target.selectionStart = ss;
     e.target.selectionEnd = se;
   }
   function getVerifyCodeFromURL(){ // If URL contains verification code(e.g. scanned from QR code), fill in and hide the verification code
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    if(urlParams.has('code')){
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.has('code')){ // URL contains verification code
+      // Hide all verication elements
       document.getElementById("verify").value = urlParams.get('code');
       document.getElementById("verify").style.display = "none";
       document.getElementById('verifybr').style.display = 'none';
@@ -256,7 +256,7 @@ let verifyCode = 0;
   }
 
 // Alert handling
-  function removeElemDelay(element, delay){ // 
+  function removeElemDelay(element, delay){ // Used to remove alerts while still allowing a fade out animation
     setTimeout(() => {
       element.style.animation = "fade-out 0.5s ease-in";
       element.style.opacity = 1;
@@ -268,18 +268,19 @@ let verifyCode = 0;
       }, 500);
     }, delay);
   }
-  function createAlert(backgroundcolor, bordercolor, html){
+  function createAlert(backgroundcolor, bordercolor, html){ // Creates alert in the container box
     var aler = document.createElement("div");
     aler.className = "alert";
     aler.style.backgroundColor = backgroundcolor;
     aler.style.borderColor = bordercolor;
-    aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElement(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span>'+html;
+    aler.innerHTML = '<span class="closebtn" onclick=\'this.style.display = "none"; removeElemDelay(this.parentElement, 0); this.parentElement.style.animation = "fade-out 0.5s ease-in"; \'>&times;</span>'+html;
     document.getElementById("contain").appendChild(aler);
     return aler;
   }
 
 // Form handling
   async function submitcode(){
+    // Get values of form
     var inout = document.getElementById("sign").value;
     var email = document.getElementById("email").value+"@lphs.school.nz";
     var reason = document.getElementById(inout+"reason").value;
@@ -287,20 +288,21 @@ let verifyCode = 0;
     if(reason == "other"){
       reason = document.getElementById("other").value;
     }
+    // Send data to backend
     var aler = createAlert("#D0D000", "#B0B000", "<strong>Sending...</strong>");
     const tex = await sheetLog(inout, email, reason, verify);
     removeElemDelay(aler, 0);
-    if(tex == "Success"){
+    if(tex == "Success"){ // Successfully logged data
       hideAndResetForm();
       aler = createAlert("#00B000", "#009600", '<strong>Successfully signed '+inout+'!</strong> Email: '+email+', Reason: '+reason+'.');
       removeElemDelay(aler, 3000);
-    }else if(tex == "VERIFY"){
+    }else if(tex == "VERIFY"){ // Did not provide correct verification code
       document.getElementById("verify").style.display = 'initial';
       document.getElementById('verifybr').style.display = 'initial';
       var aler = createAlert("#B00000", "#750000", "<strong>Incorrect verification code!</strong>");
       removeElemDelay(aler, 3000);
       verifyCode = 0;
-    }else{
+    }else{ // Something else failed(Probably backend)
       aler = createAlert("#B00000", "#750000", "<strong>Failed to sign in! Please try again.</strong>");
       removeElemDelay(aler, 3000);
     }
