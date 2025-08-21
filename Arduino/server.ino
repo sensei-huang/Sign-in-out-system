@@ -22,11 +22,11 @@ String pass_code = R"===(
 <body>
 <p>Loading...</p>
 <script>
-async function load(){
-  try {
+async function load(){ // Get the website HTML and replace the current HTML with that.
+  try{
     let response = await fetch("https://lphs.github.io/pass");
     document.querySelector('html').innerHTML = await response.text();
-    setTimeout(function(){
+    setTimeout(function(){ // Activate all the javascript scripts again
       var scripts = document.getElementsByTagName("script");
       var ii = scripts.length;
       for(var i = 0; i < ii; i++) {
@@ -35,7 +35,7 @@ async function load(){
         document.body.appendChild(script);
       }
     }, 50);
-  } catch (err) {
+  }catch(err){ // Unsuccessfully fetched
     console.log('Fetch error:' + err); // Error handling
   }
 }
@@ -50,39 +50,39 @@ String default_code = R"===(
 <body>
 <p>Loading...</p>
 <script>
-function getCookie(cname) {
+function getCookie(cname){ // Function to get document cookie
   let name = cname + "=";
   let decodedCookie = decodeURIComponent(document.cookie);
   let ca = decodedCookie.split(';');
   for(let i = 0; i < ca.length; i++) {
     let c = ca[i];
-    while (c.charAt(0) == ' ') {
+    while(c.charAt(0) == ' '){
       c = c.substring(1);
     }
-    if (c.indexOf(name) == 0) {
+    if(c.indexOf(name) == 0){
       return c.substring(name.length, c.length);
     }
   }
   return "";
 }
-async function load(){
-  try {
+async function load(){ // Get the website HTML and replace the current HTML with that.
+  try{
     let response = await fetch("https://lphs.github.io/master");
     document.querySelector('html').innerHTML = await response.text();
-    setTimeout(function(){
+    setTimeout(function(){ // Activate all the javascript scripts again
       var scripts = document.getElementsByTagName("script");
       var ii = scripts.length;
-      for(var i = 0; i < ii; i++) {
+      for(var i = 0; i < ii; i++){
         var script = document.createElement('script');
         script.innerHTML = scripts[i].innerHTML;
         document.body.appendChild(script);
       }
     }, 50);
-  } catch (err) {
+  }catch(err){
     console.log('Fetch error:' + err); // Error handling
   }
 }
-if(getCookie("pass") == ""){
+if(getCookie("pass") == ""){ // If there is no password cookie set
   window.location.pathname = "/pass";
 }
 load();
@@ -136,12 +136,12 @@ void setup() {
 
 void loop() {
   unsigned long last = millis();
-  while(millis()-last < 50){
+  while(millis()-last < 50){ // Every 50ms, handle mDNS and webserver requests
     MDNS.update();
     WebServer.handleClient();
   }
-  if(mySerial.available() > 0){
-    while(mySerial.available() > 0){
+  if(mySerial.available() > 0){ // Card Reader sent something
+    while(mySerial.available() > 0){ // Keep reading all the cards it sent
       address = mySerial.readStringUntil('\n');
       address = address.substring(0, address.length()-1);
     }
