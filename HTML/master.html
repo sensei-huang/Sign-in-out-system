@@ -370,7 +370,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
   
   <!-- School Email -->
   <label id="emailContainer" class="container">
-    <input id="email" type="text" pattern=".+\..+" placeholder="john.doe" oninvalid="this.setCustomValidity('Please enter the start of your school email. E.g. john.doe')" oninput="this.setCustomValidity(''); dynamicWidth('email', 117);" spellcheck="false">
+    <input id="email" type="text" pattern=".+\..+" minlength="1" placeholder="john.doe" oninvalid="this.setCustomValidity('Please enter the start of your school email. E.g. john.doe')" oninput="this.setCustomValidity(''); dynamicWidth('email', 117);" spellcheck="false">
     <span>@lphs.school.nz</span>
   </label><br>
   
