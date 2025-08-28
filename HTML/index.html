@@ -208,6 +208,7 @@ let verifyCode = 0;
     }
     function signChange(val){ // Activated every time the user changes whether they are signing in or signing out
       show("emailContainer");
+      show("email");
       document.getElementById(val+"reason").value = "";
       show(val+"reason");
       hide((val == "in") ? "outreason" : "inreason");
