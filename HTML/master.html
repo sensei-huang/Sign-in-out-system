@@ -360,7 +360,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
   </div>
 
 <!-- Form -->
-<form onsubmit="event.preventDefault(); submitcode();" autocomplete="off">
+<form id="form" onsubmit="event.preventDefault(); submitcode();" autocomplete="off">
   <!-- Sign in/sign out -->
   <select id="sign" onchange="signChange(this.value)">
     <option value="" disabled hidden>-- Sign in/out --</option>
@@ -497,11 +497,15 @@ var noSleep = new NoSleep();
 // Form handling
   async function submitcode(){ // Manages alerts and sends data to google sheets
     // Get values of form
-    var inout = document.getElementById("sign").value;
-    var email = document.getElementById("email").value+"@lphs.school.nz";
-    var reason = document.getElementById(inout+"reason").value;
-    if(reason == "other"){
-      reason = document.getElementById("other").value;
+    if(document.getElementById("form").reportValidity()){ // Valid form
+      var inout = document.getElementById("sign").value;
+      var email = document.getElementById("email").value+"@lphs.school.nz";
+      var reason = document.getElementById(inout+"reason").value;
+      if(reason == "other" && document.getElementById("other").reportValidity()){
+        reason = document.getElementById("other").value;
+      }
+    }else{ // Invalid form
+      return false;
     }
     // Send data to backend
     var aler = createAlert("#D0D000", "#B0B000", "<strong>Sending...</strong>");
