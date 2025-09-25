@@ -7,3 +7,4 @@ Sign-in-out system code
 | Arduino | Arduino code that was uploaded to the WeMos D1 MiNi |
 | Gerber | Gerber files for the PCB board |
 | HTML | HTML code for the website |
+| Spreadsheet | Google spreadsheet example in xlsx format |
