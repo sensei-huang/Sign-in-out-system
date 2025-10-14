@@ -52,13 +52,6 @@ function doGet(e){
           'New Sign '+inout+': '+name+', '+reason,
           'Sign: '+inout+'\nName: '+name+'\nReason: '+reason,
         );
-        // TESTING FEEDBACK
-        MailApp.sendEmail({
-          to: name,
-          subject: 'Sign-out/in system feedback',
-          htmlBody: '<html><body><p>Could you please give feedback on the sign-out system(the one on the chromebook) as we are currently trialing this system?<br><br><a href="https://forms.gle/s7dvJx6wRmgvaPub9">Google forms</a><br><br>Disclaimer: This was automatically sent by a bot</p></body></html>',
-        });
-        // TESTING FEEDBACK
         return ContentService.createTextOutput("Success");
       } catch (err) {
         console.log('Failed with error %s', err.message);
