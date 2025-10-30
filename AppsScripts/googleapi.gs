@@ -47,7 +47,7 @@ function doGet(e){
         var sortingRange = sheet.getRange(2, 1, Number(values[0][0]), 5);
         sortingRange.sort([4, 3, 2]);
         SpreadsheetApp.flush();
-        let emailList = emails[0].filter(a => a);
+        let emailList = emails.filter(a => a);
         MailApp.sendEmail(
           emailList.join(','),
           'New Sign '+inout+': '+name+', '+reason,
